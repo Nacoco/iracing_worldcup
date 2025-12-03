@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>iRacing 스포츠카 성향 설문 – Step 1</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color-scheme: dark;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #1f2937 0, #020617 50%, #000 100%);
+      color: #e5e7eb;
+    }
+    .app {
+      width: 100%;
+      max-width: 900px;
+      padding: 24px 20px 32px;
+      box-sizing: border-box;
+    }
+    .card {
+      background: rgba(15,23,42,0.9);
+      border-radius: 24px;
+      border: 1px solid #1f2937;
+      padding: 24px 20px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+      backdrop-filter: blur(12px);
+    }
+    h1 {
+      margin: 0 0 4px;
+      font-size: 26px;
+      text-align: center;
+    }
+    .subtitle {
+      text-align: center;
+      font-size: 14px;
+      color: #9ca3af;
+      margin-bottom: 20px;
+    }
+    .step-indicator {
+      text-align: center;
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 8px;
+    }
+    .step-indicator span {
+      font-weight: 600;
+      color: #facc15;
+    }
+    .license-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 640px) {
+      .license-list {
+        grid-template-columns: 1fr;
+      }
+    }
+    .license-card {
+      border-radius: 18px;
+      border: 1px solid #1f2937;
+      padding: 14px 14px 12px;
+      cursor: pointer;
+      transition: border-color 0.15s ease, background 0.15s ease, transform 0.12s ease;
+      background: #020617;
+    }
+    .license-card:hover {
+      border-color: #4f46e5;
+      transform: translateY(-2px);
+    }
+    .license-card.active {
+      border-color: #f97316;
+      background: radial-gradient(circle at top left, #1e293b, #020617 60%);
+    }
+    .license-code {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 2px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid #374151;
+      color: #9ca3af;
+      margin-bottom: 6px;
+    }
+    .license-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .license-desc {
+      font-size: 13px;
+      color: #9ca3af;
+      line-height: 1.5;
+    }
+    .detail-panel {
+      border-radius: 18px;
+      border: 1px solid #1f2937;
+      background: #020617;
+      padding: 14px 14px 12px;
+      margin-bottom: 16px;
+    }
+    .detail-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .detail-body {
+      font-size: 13px;
+      color: #9ca3af;
+      line-height: 1.5;
+      margin-bottom: 10px;
+      white-space: pre-line;
+    }
+    .tag-section-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid #374151;
+      background: #020617;
+      color: #e5e7eb;
+    }
+    .tag.cls {
+      border-style: dashed;
+      color: #9ca3af;
+    }
+    .foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+    .next-btn {
+      border-radius: 999px;
+      padding: 8px 18px;
+      font-size: 13px;
+      border: none;
+      cursor: pointer;
+      background: #4f46e5;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s ease, transform 0.12s ease, box-shadow 0.12s ease;
+    }
+    .next-btn:disabled {
+      opacity: 0.4;
+      cursor: default;
+      box-shadow: none;
+      transform: none;
+    }
+    .next-btn:not(:disabled):hover {
+      background: #6366f1;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(79,70,229,0.5);
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="card">
+      <div class="step-indicator">
+        Step <span>1</span> / 4 · 라이센스 성향 선택
+      </div>
+      <h1>iRacing 라이센스 성향 체크</h1>
+      <p class="subtitle">
+        지금 내 성향에 가장 가까운 라이센스를 골라보면,<br/>
+        나중에 이상형 월드컵 차량 추천과 매칭에 쓸 거예요.
+      </p>
+
+      <div class="license-list" id="licenseList"></div>
+
+      <div class="detail-panel" id="detailPanel">
+        <div class="detail-title">먼저 라이센스를 선택해 주세요.</div>
+        <div class="detail-body">
+선택한 라이센스에 맞춰:
+- 주행 분위기 설명
+- 추천 차량 태그 (예: GT3, MX-5, GR86 …)
+를 아래에 보여줄 거예요.
+        </div>
+        <div class="tag-section-title">추천 차량 태그</div>
+        <div class="tags" id="tagContainer">
+          <span class="tag cls">아직 선택된 라이센스가 없습니다.</span>
+        </div>
+      </div>
+
+      <div class="foot">
+        <span>이 단계에서 선택한 값은 다음 스텝의 설문/월드컵에 활용됩니다.</span>
+        <button class="next-btn" id="nextBtn" disabled>
+          다음 스텝으로 (준비 중)
+          <span>→</span>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // 라이센스 데이터 + 주요 차량 태그
+    const licenses = [
+      {
+        code: "D",
+        level: "입문 · 로우 라이센스",
+        title: "범퍼카 존 (연습 & 멘탈 테스트 구간)",
+        desc: "• 아직 레이싱 자체가 낯설고, 사고를 겁내기보다는 몸으로 익히는 단계.\n• 사고 나도 '그럴 수 있지' 수준으로 웃으면서 넘기는 멘탈.\n• 레이스 매너보다는 차 컨트롤 익히기, 트래픽 적응이 우선.\n\n→ \"일단 부딪혀보면서 배우자\" 타입이라면 D 성향에 가까워요.",
+        tags: [
+          { type: "cls", label: "엔트리 / 로우 스피드" },
+          { type: "car", label: "Mazda MX-5 Cup" },
+          { type: "car", label: "Toyota GR86 Cup" },
+          { type: "car", label: "VW Jetta TDI Cup" },
+          { type: "car", label: "Ford Mustang FR500S" }
+        ]
+      },
+      {
+        code: "C",
+        level: "미들 라이센스",
+        title: "전손 각오 코너 사바사 (하이리스크 하이리턴)",
+        desc: "• 배틀이 붙으면 브레이킹 포인트가 3m씩 앞으로 가는 타입.\n• 코너마다 상대 성향에 따라 사바사: 전손을 각오한 과감한 Dive도 불사.\n• 사고를 피하는 것보다는 빈틈을 찌르는 공격적인 주행을 선호.\n\n→ \"어차피 게임인데, 붙으면 양보는 없다\" 쪽이라면 C 성향.",
+        tags: [
+          { type: "cls", label: "GT4 / TCR / 어그레시브 로비" },
+          { type: "car", label: "Porsche 718 Cayman GT4" },
+          { type: "car", label: "Mercedes-AMG GT4" },
+          { type: "car", label: "Hyundai Elantra N TCR" },
+          { type: "car", label: "Honda Civic Type R TCR" }
+        ]
+      },
+      {
+        code: "B",
+        level: "상위 미들 · 메인 스트리트",
+        title: "치열한 생존 경쟁 (SR과 포지션 둘 다 챙기기)",
+        desc: "• SR(세이프티)도 중요하지만, 포지션과 페이스도 포기 못 하는 타입.\n• 무조건 들이받지는 않지만, 빈틈 보이면 늦지 않게 과감히 시도.\n• GT3·GTE 같은 메이저 클래스에서 솔로/멀티 레이스 즐기기 좋아함.\n\n→ \"안전하게만 타자 vs 죽어도 추월\" 사이 어딘가에 있는 현실적인 레이서.",
+        tags: [
+          { type: "cls", label: "GT3 / GTE / LMP2 메인급" },
+          { type: "car", label: "Ferrari 296 GT3" },
+          { type: "car", label: "Porsche 911 GT3 R (992)" },
+          { type: "car", label: "BMW M4 GT3" },
+          { type: "car", label: "Mercedes-AMG GT3 2020" },
+          { type: "car", label: "Ferrari 488 GTE" },
+          { type: "car", label: "Dallara P217 LMP2" }
+        ]
+      },
+      {
+        code: "A",
+        level: "상위 라이센스",
+        title: "젠틀맨 리그 (클린 레이싱 최우선)",
+        desc: "• 사고를 내느니 포지션 하나 양보하더라도 클린하게 가는 타입.\n• 롱런 페이스, 타이어/연료 관리, 전략 같은 요소를 즐김.\n• 멀티클래스에서 백마커/블루 플래그 매너를 중시.\n\n→ \"실제 모터스포츠 매너처럼 즐기고 싶다\"면 A 성향에 가깝습니다.",
+        tags: [
+          { type: "cls", label: "GTP / 고SR 로비 / 리그 레이스" },
+          { type: "car", label: "BMW M Hybrid V8" },
+          { type: "car", label: "Chevrolet Corvette Z06 GT3.R" },
+          { type: "car", label: "Aston Martin Vantage GT3" },
+          { type: "car", label: "Porsche 911 GT3 Cup (992)" }
+        ]
+      }
+    ];
+
+    const licenseListEl = document.getElementById("licenseList");
+    const detailPanelEl = document.getElementById("detailPanel");
+    const tagContainerEl = document.getElementById("tagContainer");
+    const nextBtn = document.getElementById("nextBtn");
+
+    let selectedCode = null;
+
+    function renderLicenses() {
+      licenseListEl.innerHTML = "";
+      licenses.forEach(lic => {
+        const div = document.createElement("div");
+        div.className = "license-card";
+        div.dataset.code = lic.code;
+        div.innerHTML = `
+          <div class="license-code">라이센스 ${lic.code}</div>
+          <div class="badge">
+            <span>${lic.level}</span>
+          </div>
+          <div class="license-title">${lic.title}</div>
+          <div class="license-desc">${lic.desc.split("\n")[0]}</div>
+        `;
+        div.addEventListener("click", () => selectLicense(lic.code));
+        licenseListEl.appendChild(div);
+      });
+    }
+
+    function selectLicense(code) {
+      selectedCode = code;
+      // 카드 active 반영
+      Array.from(document.getElementsByClassName("license-card")).forEach(card => {
+        if (card.dataset.code === code) card.classList.add("active");
+        else card.classList.remove("active");
+      });
+
+      const lic = licenses.find(l => l.code === code);
+      if (!lic) return;
+
+      // 상세 설명 반영
+      detailPanelEl.querySelector(".detail-title").textContent =
+        `라이센스 ${lic.code} – ${lic.level}`;
+      detailPanelEl.querySelector(".detail-body").textContent = lic.desc;
+
+      // 태그 렌더링
+      tagContainerEl.innerHTML = "";
+      lic.tags.forEach(tag => {
+        const span = document.createElement("span");
+        span.className = "tag" + (tag.type === "cls" ? " cls" : "");
+        span.textContent = tag.label;
+        tagContainerEl.appendChild(span);
+      });
+
+      nextBtn.disabled = false;
+    }
+
+    nextBtn.addEventListener("click", () => {
+      if (!selectedCode) return;
+      alert(
+        `지금은 1단계만 구현된 상태입니다.\n\n선택한 라이센스: ${selectedCode}\n\n다음 단계에서는:\n- 주행 시간대, 선호 트랙 스타일\n- 차량 난이도 선호\n등을 받아서 이상형 월드컵 32강 후보를 자동 추천하는 로직으로 확장할 수 있어요.`
+      );
+    });
+
+    renderLicenses();
+  </script>
+</body>
+</html>
