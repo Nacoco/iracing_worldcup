@@ -2,7 +2,8 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>iRacing 스포츠카 설문 & 이상형 월드컵 (v0.2)</title>
+  <title>iRacing 스포츠카 성향 설문 + 이상형 월드컵</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     * { box-sizing: border-box; }
     body {
@@ -12,22 +13,16 @@
       color: #e5e7eb;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
       min-height: 100vh;
-      padding: 24px;
     }
     .app {
       width: 100%;
-      max-width: 1000px;
-      background: #020617;
-      border-radius: 24px;
-      border: 1px solid #1f2937;
-      padding: 24px 24px 32px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      max-width: 1080px;
+      padding: 24px 16px 40px;
     }
     h1 {
-      margin: 0 0 8px;
       font-size: 28px;
+      margin: 0 0 8px;
       text-align: center;
     }
     .subtitle {
@@ -36,66 +31,147 @@
       color: #9ca3af;
       margin-bottom: 24px;
     }
-
-    /* step indicator */
-    .steps {
+    .steps-nav {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       gap: 8px;
       margin-bottom: 24px;
-      font-size: 13px;
+      flex-wrap: wrap;
     }
-    .step {
-      flex: 1;
-      padding: 8px 10px;
+    .step-pill {
+      padding: 6px 12px;
       border-radius: 999px;
       border: 1px solid #1f2937;
-      text-align: center;
-      color: #9ca3af;
-      background: #020617;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      opacity: 0.45;
     }
-    .step.active {
-      border-color: #3b82f6;
-      background: radial-gradient(circle at top, #1d4ed8 0, #020617 60%);
-      color: #f9fafb;
-      font-weight: 600;
+    .step-pill.active {
+      background: #1d4ed8;
+      border-color: #2563eb;
+      opacity: 1;
     }
-
-    .step-title {
-      font-weight: 600;
-      margin-bottom: 2px;
+    .step-pill.done {
+      background: #16a34a;
+      border-color: #16a34a;
+      opacity: 1;
     }
-    .step-desc {
+    .step-pill span.idx {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.6);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       font-size: 11px;
     }
 
-    /* generic buttons */
-    .buttons {
+    .step {
+      display: none;
+    }
+    .step.active {
+      display: block;
+    }
+
+    /* STEP 1 - 라이센스 성향 */
+    .license-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+    @media (max-width: 900px) {
+      .license-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 640px) {
+      .license-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .license-card {
+      background: #020617;
+      border-radius: 16px;
+      padding: 16px;
+      border: 1px solid #1f2937;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+    }
+    .license-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+      border-color: #4b5563;
+    }
+    .license-card.selected {
+      border-color: #2563eb;
+      background: radial-gradient(circle at top left, rgba(37,99,235,0.35), #020617);
+      box-shadow: 0 0 0 1px rgba(37,99,235,0.7);
+    }
+    .license-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: #111827;
+      border: 1px solid #1f2937;
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+    .license-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .license-desc {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+    .license-meta {
+      font-size: 11px;
+      color: #6b7280;
+    }
+
+    .step-footer {
+      margin-top: 20px;
       display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      margin-top: 16px;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
     }
     button {
-      border-radius: 999px;
       border: none;
-      cursor: pointer;
-      padding: 8px 16px;
+      border-radius: 999px;
+      padding: 10px 18px;
       font-size: 14px;
-      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.12s ease, transform 0.08s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    button.primary {
       background: #1d4ed8;
-      color: #f9fafb;
-      transition: background 0.15s ease, transform 0.1s ease;
+      color: white;
     }
-    button.secondary {
-      background: #374151;
-    }
-    button:hover {
+    button.primary:hover {
       background: #2563eb;
       transform: translateY(-1px);
     }
+    button.secondary {
+      background: #111827;
+      color: #e5e7eb;
+    }
     button.secondary:hover {
-      background: #4b5563;
+      background: #1f2937;
+      transform: translateY(-1px);
     }
     button:disabled {
       opacity: 0.4;
@@ -103,314 +179,374 @@
       transform: none;
     }
 
-    /* step containers */
-    .step-container {
-      display: none;
-    }
-    .step-container.active {
-      display: block;
-    }
-
-    /* STEP 1: 라이센스 성향 */
-    .license-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap: 16px;
-    }
-    @media (max-width: 720px) {
-      .license-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-    .card {
-      background: #020617;
-      border-radius: 18px;
-      border: 1px solid #1f2937;
-      padding: 16px 18px;
-      cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
-    }
-    .card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
-      border-color: #4b5563;
-    }
-    .card.selected {
-      border-color: #3b82f6;
-      background: radial-gradient(circle at top, rgba(37,99,235,0.25), #020617);
-    }
-    .license-label {
-      font-size: 13px;
-      color: #9ca3af;
-      margin-bottom: 4px;
-    }
-    .license-name {
-      font-size: 17px;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-    .license-desc {
-      font-size: 13px;
-      color: #d1d5db;
-      line-height: 1.45;
-    }
     .hint {
-      margin-top: 10px;
       font-size: 12px;
       color: #6b7280;
+      margin-top: 8px;
     }
 
-    /* STEP 2: 월드컵 */
+    /* STEP 2 - 이상형 월드컵 */
     .round-info {
       text-align: center;
-      margin-bottom: 10px;
-      font-size: 15px;
-      font-weight: 600;
+      margin-bottom: 12px;
+      font-size: 14px;
     }
-    .status-small {
-      text-align: center;
-      font-size: 12px;
-      color: #9ca3af;
-      margin-bottom: 16px;
-    }
-    .match {
+    .match-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 16px;
+      margin-top: 8px;
     }
-    @media (max-width: 720px) {
-      .match {
+    @media (max-width: 768px) {
+      .match-grid {
         grid-template-columns: 1fr;
       }
     }
     .car-card {
       background: #020617;
-      border-radius: 18px;
+      border-radius: 16px;
       border: 1px solid #1f2937;
-      padding: 12px 12px 14px;
-      cursor: pointer;
-      text-align: center;
-      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
-      position: relative;
       overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
     }
     .car-card:hover {
       transform: translateY(-2px);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.7);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
       border-color: #4b5563;
     }
-    .car-card img {
-      width: 100%;
-      max-height: 180px;
-      object-fit: cover;
-      border-radius: 12px;
-      margin-bottom: 8px;
+    .car-image-wrap {
+      position: relative;
+      padding-top: 56.25%;
+      overflow: hidden;
       background: #020617;
     }
+    .car-image-wrap img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .car-content {
+      padding: 12px 14px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
     .car-name {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
-      margin-bottom: 4px;
     }
     .car-class {
       font-size: 12px;
       color: #9ca3af;
-      margin-bottom: 4px;
     }
     .car-tags {
-      font-size: 11px;
-      color: #a5b4fc;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .tag {
+      font-size: 10px;
+      border-radius: 999px;
+      padding: 2px 8px;
+      background: #0b1120;
+      border: 1px solid #1f2937;
+      color: #9ca3af;
+    }
+    .step-label {
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: #9ca3af;
+    }
+
+    .round-progress {
+      font-size: 12px;
+      color: #6b7280;
+      text-align: center;
+      margin-top: 6px;
+    }
+
+    /* STEP 3 - 결과 & 공유 */
+    .result-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.6fr);
+      gap: 16px;
+    }
+    @media (max-width: 960px) {
+      .result-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    .panel {
+      background: #020617;
+      border-radius: 16px;
+      border: 1px solid #1f2937;
+      padding: 14px 16px 16px;
+    }
+    .panel-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .panel-body {
+      font-size: 13px;
+      color: #9ca3af;
+    }
+    .summary-line {
       margin-bottom: 6px;
     }
-    .car-hint {
-      font-size: 11px;
-      color: #6b7280;
+    .cost-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 6px;
     }
-    .winner-text {
-      text-align: center;
-      margin-top: 16px;
-      font-size: 18px;
-      font-weight: 700;
+    .cost-table th,
+    .cost-table td {
+      padding: 4px 6px;
+      border-bottom: 1px solid #111827;
+    }
+    .cost-table th {
+      text-align: left;
+      color: #e5e7eb;
+      font-weight: 600;
+    }
+    .cost-table td.num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+    .winner-highlight {
+      border: 1px solid #facc15;
+      box-shadow: 0 0 0 1px rgba(250,204,21,0.3);
+    }
+    .winner-badge {
+      font-size: 11px;
+      background: rgba(250,204,21,0.1);
+      border-radius: 999px;
+      padding: 2px 8px;
+      border: 1px solid rgba(250,204,21,0.4);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 4px;
       color: #facc15;
     }
 
-    /* STEP 3: 요약 & 비용 */
-    .summary-box {
-      border-radius: 18px;
-      border: 1px solid #1f2937;
-      padding: 16px 18px;
-      background: radial-gradient(circle at top, rgba(55,65,81,0.3), #020617);
-      margin-bottom: 14px;
+    .share-box {
+      margin-top: 6px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
     }
-    .summary-title {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    .summary-item {
-      font-size: 13px;
-      color: #d1d5db;
-      margin-bottom: 4px;
-    }
-    .price-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 8px;
-      font-size: 13px;
-    }
-    .price-table th,
-    .price-table td {
-      border: 1px solid #1f2937;
-      padding: 6px 8px;
-      text-align: right;
-    }
-    .price-table th:first-child,
-    .price-table td:first-child {
-      text-align: left;
-    }
-    .badge {
-      display: inline-block;
-      font-size: 11px;
-      padding: 2px 8px;
+    .share-input {
+      flex: 1;
+      min-width: 0;
       border-radius: 999px;
-      background: #1f2937;
+      border: 1px solid #1f2937;
+      background: #020617;
+      padding: 8px 10px;
+      font-size: 12px;
       color: #e5e7eb;
-      margin-left: 4px;
+    }
+    .share-note {
+      font-size: 11px;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 2px 8px;
+      border: 1px solid #1f2937;
+      font-size: 11px;
+      color: #9ca3af;
+      gap: 4px;
+    }
+    .shared-banner {
+      margin-bottom: 12px;
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 12px;
+      background: rgba(37,99,235,0.08);
+      border: 1px solid rgba(37,99,235,0.3);
+      color: #bfdbfe;
+    }
+    .small {
+      font-size: 11px;
+      color: #6b7280;
     }
   </style>
 </head>
 <body>
   <div class="app">
-    <h1>iRacing 스포츠카 설문 & 이상형 월드컵</h1>
+    <h1>iRacing 스포츠카 성향 설문 & 이상형 월드컵</h1>
     <div class="subtitle">
-      레이스 성향 → 차량 이상형 월드컵 → 2025 시즌 4 기준 유료 트랙/차량 대략 비용까지 한 번에!
+      레이스 성향 &gt; 스포츠카 이상형 월드컵 &gt; 2025 Season 4 B클래스 유료 비용까지 한 번에 보기
     </div>
 
-    <div class="steps">
-      <div class="step active" data-step="1">
-        <div class="step-title">1단계 · 레이스 성향</div>
-        <div class="step-desc">게임 스타일 확인</div>
+    <div id="sharedBanner" class="shared-banner" style="display:none;"></div>
+
+    <div class="steps-nav">
+      <div class="step-pill active" id="navStep1">
+        <span class="idx">1</span> 성향 / 라이센스
       </div>
-      <div class="step" data-step="2">
-        <div class="step-title">2단계 · 차량 월드컵</div>
-        <div class="step-desc">스포츠카 이상형</div>
+      <div class="step-pill" id="navStep2">
+        <span class="idx">2</span> 이상형 월드컵
       </div>
-      <div class="step" data-step="3">
-        <div class="step-title">3단계 · 비용 개략</div>
-        <div class="step-desc">유료 트랙/차량</div>
+      <div class="step-pill" id="navStep3">
+        <span class="idx">3</span> 결과 &amp; 유료 비용
       </div>
     </div>
 
-    <!-- STEP 1: 라이센스 성향 -->
-    <div id="step1" class="step-container active">
-      <h2>1단계 – 레이스 성향 / 라이센스 느낌</h2>
-      <p style="font-size:13px;color:#d1d5db;margin-bottom:12px;">
-        실제 iRacing 라이센스와 1:1 매칭은 아니고, <b>분위기</b>에 맞춰 만든 컨셉이야.  
-        지금 내 플레이 스타일이 어디에 가까운지 골라봐.
-      </p>
-      <div class="license-grid" id="licenseGrid">
-        <!-- 카드 4개 -->
+    <!-- STEP 1: 라이센스 / 성향 선택 -->
+    <div class="step active" id="step1">
+      <div class="step-label">Q1. 내 레이스 성향에 가장 가까운 라이센스 느낌은?</div>
+      <div class="license-grid" id="licenseGrid"></div>
+      <div class="hint">
+        ※ A는 젠틀맨 리그, D는 사실상 범퍼카… 느낌으로 생각하면 된다. 하나만 골라서 다음 단계로!
+      </div>
+      <div class="step-footer">
+        <div></div>
+        <button id="toStep2" class="primary" disabled>
+          다음 단계 (이상형 월드컵) →
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 2: 이상형 월드컵 -->
+    <div class="step" id="step2">
+      <div class="step-label">Q2. 내 스타일에 가장 잘 맞는 스포츠카는?</div>
+      <div class="round-info" id="roundInfo"></div>
+      <div class="match-grid" id="matchGrid"></div>
+      <div class="round-progress" id="roundProgress"></div>
+
+      <div class="step-footer">
+        <button id="backTo1" class="secondary">← 1단계로 돌아가기</button>
+        <button id="skipToResult" class="secondary">월드컵 건너뛰고 결과만 보기</button>
       </div>
       <div class="hint">
-        선택하면 2단계에서 나오는 차량 월드컵 결과와 함께 <b>추천 방향</b>에 반영해줄게.
-      </div>
-      <div class="buttons">
-        <button id="step1Next" disabled>다음 (2단계로)</button>
+        ※ 같은 라운드 한 매치업에서 **좌/우에 같은 차량이 나오지 않도록** 고정된 대진표(1:1 토너먼트)로 구성되어 있다.
       </div>
     </div>
 
-    <!-- STEP 2: 차량 이상형 월드컵 -->
-    <div id="step2" class="step-container">
-      <h2>2단계 – iRacing 스포츠카 이상형 월드컵 (32강)</h2>
-      <p class="status-small">
-        좌/우에 <b>서로 다른 차량</b>만 나오도록 짰고,  
-        매 라운드에서 이긴 차만 다음 라운드로 진출하는 토너먼트 방식이야.
-      </p>
-      <div id="roundInfo" class="round-info"></div>
-      <div id="match" class="match"></div>
-      <div id="winnerText" class="winner-text"></div>
+    <!-- STEP 3: 결과 + 유료 비용 + 공유 링크 -->
+    <div class="step" id="step3">
+      <div class="step-label">Q3. 내 성향 / 이상형 / B클래스 유료 비용 요약</div>
 
-      <div class="buttons">
-        <button id="restartWorldcup" class="secondary">월드컵 다시하기</button>
-        <button id="goStep3" disabled>3단계로 (비용 보기)</button>
-      </div>
-      <p class="status-small">
-        * 이미지 URL은 placeholder로 넣어두었고, 나중에 iRacing 홈페이지에서 각 차량 페이지 이미지 주소를 복사해서 교체하면 돼요.
-      </p>
-    </div>
+      <div class="result-layout">
+        <!-- 좌측: 성향 + 월드컵 결과 -->
+        <div class="panel">
+          <div class="panel-title">① 레이스 성향 & 라이센스 느낌</div>
+          <div class="panel-body" id="licenseResultBody">
+            <!-- filled by JS -->
+          </div>
 
-    <!-- STEP 3: 요약 & 비용 -->
-    <div id="step3" class="step-container">
-      <h2>3단계 – 2025 시즌 4 기준 유료 컨텐츠 대략 비용</h2>
+          <hr style="border:0;border-top:1px solid #111827;margin:12px 0;" />
 
-      <div class="summary-box">
-        <div class="summary-title">내 선택 요약</div>
-        <div class="summary-item" id="summaryLicense"></div>
-        <div class="summary-item" id="summaryCar"></div>
-      </div>
-
-      <div class="summary-box">
-        <div class="summary-title">
-          B 라이센스 스포츠카 (GT3 기준) 유료 컨텐츠 비용 대략
-          <span class="badge">2025 Season 4 가정</span>
+          <div class="panel-title">② 스포츠카 이상형 월드컵 결과</div>
+          <div class="panel-body" id="worldcupResultBody">
+            <!-- filled by JS -->
+          </div>
         </div>
-        <table class="price-table">
-          <thead>
-            <tr>
-              <th>항목</th>
-              <th>수량</th>
-              <th>단가 (USD)</th>
-              <th>합계 (USD)</th>
-            </tr>
-          </thead>
-          <tbody id="priceBody">
-            <!-- JS에서 채움 -->
-          </tbody>
-        </table>
-        <div class="summary-item" id="priceNote" style="margin-top:6px;font-size:12px;color:#9ca3af;">
-          ※ 정확한 가격/시즌 트랙 구성은 iRacing 공식 스케줄과 상시 변동 가능성을 고려해서  
-          <b>차량 1대 + 유료 트랙 11개</b> 기준으로 대략 계산했어.
+
+        <!-- 우측: 비용 + 공유 -->
+        <div class="panel">
+          <div class="panel-title">③ 2025 Season 4 B클래스 유료 기준 비용 (대략)</div>
+          <div class="panel-body" id="costResultBody">
+            <!-- filled by JS -->
+          </div>
+
+          <hr style="border:0;border-top:1px solid #111827;margin:12px 0;" />
+
+          <div class="panel-title">결과 공유 링크</div>
+          <div class="panel-body">
+            <div class="summary-line small">
+              이 설문/월드컵 결과를 다른 사람에게 보여주고 싶다면, 아래 URL을 복사해서 보내면 된다.
+            </div>
+            <div class="share-box">
+              <input id="shareInput" class="share-input" readonly value="" />
+              <button id="copyShare" class="secondary" type="button">복사</button>
+            </div>
+            <div class="share-note">
+              상대방은 이 링크로 접속하면, 설문/월드컵을 다시 할 필요 없이 바로 <strong>당신의 결과 화면</strong>을 보게 된다.
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="buttons">
-        <button id="backToStep2" class="secondary">2단계 다시보기</button>
+      <div class="step-footer" style="margin-top:20px;">
+        <button id="restartAll" class="secondary">처음부터 다시 하기</button>
+        <button id="backTo2" class="secondary">← 월드컵 다시 해보기</button>
       </div>
     </div>
   </div>
 
   <script>
-    /* -------------------------------
-       데이터 정의
-    --------------------------------*/
+    // ===============================
+    // 0. 유틸: 숫자 포맷 / 인코딩
+    // ===============================
+    function formatMoney(num) {
+      return "$" + num.toFixed(2);
+    }
 
-    // 1단계: 라이센스/성향 카드
-    const licenses = [
+    function encodeResult(obj) {
+      const json = JSON.stringify(obj);
+      // UTF-8 안전하게
+      return btoa(encodeURIComponent(json));
+    }
+
+    function decodeResult(str) {
+      try {
+        const json = decodeURIComponent(atob(str));
+        return JSON.parse(json);
+      } catch (e) {
+        console.error("decodeResult error", e);
+        return null;
+      }
+    }
+
+    // ===============================
+    // 1. 라이센스 옵션 정의
+    // ===============================
+    const licenseOptions = [
       {
-        code: "D",
-        title: "D 라이센스 느낌 – 범퍼카 존",
-        desc: "컨택? 괜찮지! ‘살짝’ 박고 박히는 것까지도 레이스의 일부라고 생각함. 앞차 범퍼에 스티어링 걸리는 순간이 제일 짜릿한 타입.",
+        id: "A",
+        title: "A 라이센스 – 젠틀맨 리그",
+        desc: "클린 레이스 최우선. 접촉 최소화, 롱런 페이스와 타이어 관리, 매너 있는 배틀을 즐기는 타입.",
+        detail: "실제 모터스포츠 젠틀맨 드라이버 느낌. 인시던트를 극도로 싫어하고, 무리한 추월보다 깨끗한 완주를 선호."
       },
       {
-        code: "C",
-        title: "C 라이센스 느낌 – 전손 각오 코너 사바사",
-        desc: "‘여긴 보내야 해’ 싶은 코너에선 전손도 각오함. 누구랑 싸우는지, 코너 성향이 어떤지에 따라 몸싸움 강도가 달라지는 타입.",
+        id: "B",
+        title: "B 라이센스 – 치열한 생존 경쟁",
+        desc: "그리드 전체가 늑대 우리. 페이스와 배틀 모두 치열한 환경에서 살아남는 생존 경쟁형.",
+        detail: "적당한 리스크는 감수하면서도 완주는 챙기고 싶은 타입. iRating과 챔피언십 포인트 둘 다 욕심나는 구간."
       },
       {
-        code: "B",
-        title: "B 라이센스 느낌 – 치열한 생존 경쟁",
-        desc: "인시던트 포인트는 소중하지만, 포지션 싸움도 포기 못함. 깨끗하게 가되, 빈 공간 있으면 무조건 코 들이밀어 보는 타입.",
+        id: "C",
+        title: "C 라이센스 – 전손 각오 코너 사바사",
+        desc: "특정 코너는 ‘오늘은 여기서 누가 살아남나’ 수준. 브레이킹 존과 사이드 바이 사이드가 항상 도박인 구간.",
+        detail: "SR 관리보단 배틀의 쾌감이 먼저. 무리한 dive bomb과 과감한 라인 선택이 자주 나오는 특유의 카 chaos 분위기."
       },
       {
-        code: "A",
-        title: "A 라이센스 느낌 – 젠틀맨 리그",
-        desc: "클린 레이싱이 최우선. 추월도 ‘상대가 인지했는지’까지 확인하는 타입. 인시던트 적게, 피트 전략과 페이스로 승부 보는 스타일.",
-      },
+        id: "D",
+        title: "D 라이센스 – 범퍼카 구간",
+        desc: "스타트부터 Turn 1은 사실상 범퍼카. 라인, 브레이킹 포인트보다 ‘여기서 안 죽는 법’을 먼저 배워야 하는 레벨.",
+        detail: "첫 랩 생존이 곧 스킬. 정신없는 혼돈 속에서 차를 세우지 않고 완주만 해도 영웅인 구간."
+      }
     ];
 
-    // 2단계: 스포츠카 월드컵용 차량 DB
-    // img는 현재 placeholder. 나중에 iracing.com 차량 페이지에서 이미지 주소 복사해서 교체하면 됨.
-    const baseCars = [
+    // ===============================
+    // 2. 차량 DB (이미 준비된 baseCars 사용)
+    // ===============================
+   const baseCars = [
   // =========================
   // 현대 GT3 라인업
   // =========================
@@ -932,15 +1068,93 @@
     img: "https://s100.iracing.com/wp-content/uploads/2020/05/included_SCCASpecRacerFord-350x197.jpg"
   }
 ];
+    // 데모를 위해, 만약 baseCars가 전역에 없다면 간단한 최소 더미라도 만들어서 에러 방지
+    if (typeof baseCars === "undefined") {
+      console.warn("⚠ baseCars 상수가 정의되어 있지 않습니다. 실제 사용 시, 이 파일 안에 baseCars 전체를 붙여 넣으세요.");
+      window.baseCars = [
+        {
+          name: "Ferrari 296 GT3",
+          cls: "GT3",
+          tags: ["gt3", "modern", "mid_engine", "meta"],
+          img: "https://s100.iracing.com/wp-content/uploads/2023/09/Ferrari296GT3-feature-1-350x197.jpg"
+        },
+        {
+          name: "BMW M4 GT3 EVO",
+          cls: "GT3",
+          tags: ["gt3", "modern", "front_engine", "stable"],
+          img: "https://s100.iracing.com/wp-content/uploads/2020/12/BMW-M4-GT3-Evo-feature-350x197.jpg"
+        },
+        {
+          name: "Porsche 911 GT3 R (992)",
+          cls: "GT3",
+          tags: ["gt3", "modern", "rear_engine", "high_skill"],
+          img: "https://s100.iracing.com/wp-content/uploads/2023/06/porsche992rgt3-feature-1-350x197.jpg"
+        },
+        {
+          name: "Toyota GR86",
+          cls: "Club",
+          tags: ["club", "rwd", "beginner_friendly"],
+          img: "https://s100.iracing.com/wp-content/uploads/2022/12/Toyota-GR86-350x197.jpg"
+        }
+      ];
+    }
 
-    // 3단계: 비용 계산 기본 값
-    const PRICE_CAR = 11.95;      // GT3 1대
-    const PRICE_TRACK = 14.95;    // 유료 트랙 1개
-    const N_TRACKS = 11;          // 2025 S4 기준 대략 11개라고 가정
+    // ===============================
+    // 3. 상태 관리
+    // ===============================
+    let currentStep = 1;
+    let selectedLicense = null;
+    let worldcupState = null; // 브라켓 상태
+    let finalResult = null;   // 공유를 위해 직렬화할 최종 결과
 
-    /* -------------------------------
-       공통 유틸
-    --------------------------------*/
+    // ===============================
+    // 4. STEP 전환
+    // ===============================
+    function setStep(step) {
+      currentStep = step;
+      document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
+      document.getElementById("step" + step).classList.add("active");
+
+      const nav1 = document.getElementById("navStep1");
+      const nav2 = document.getElementById("navStep2");
+      const nav3 = document.getElementById("navStep3");
+      [nav1, nav2, nav3].forEach(n => {
+        n.classList.remove("active", "done");
+      });
+      nav1.classList.add(step === 1 ? "active" : (step > 1 ? "done" : ""));
+      nav2.classList.add(step === 2 ? "active" : (step > 2 ? "done" : (step > 1 ? "done" : "")));
+      nav3.classList.add(step === 3 ? "active" : (step > 3 ? "done" : ""));
+    }
+
+    // ===============================
+    // 5. STEP 1 – 라이센스 렌더링
+    // ===============================
+    function renderLicenseCards() {
+      const grid = document.getElementById("licenseGrid");
+      grid.innerHTML = "";
+      licenseOptions.forEach(opt => {
+        const div = document.createElement("div");
+        div.className = "license-card";
+        div.dataset.id = opt.id;
+        div.innerHTML = `
+          <div class="license-badge">${opt.id}</div>
+          <div class="license-title">${opt.title}</div>
+          <div class="license-desc">${opt.desc}</div>
+          <div class="license-meta">${opt.detail}</div>
+        `;
+        div.addEventListener("click", () => {
+          selectedLicense = opt;
+          document.querySelectorAll(".license-card").forEach(c => c.classList.remove("selected"));
+          div.classList.add("selected");
+          document.getElementById("toStep2").disabled = false;
+        });
+        grid.appendChild(div);
+      });
+    }
+
+    // ===============================
+    // 6. STEP 2 – 월드컵 로직
+    // ===============================
     function shuffle(array) {
       const arr = array.slice();
       for (let i = arr.length - 1; i > 0; i--) {
@@ -949,239 +1163,417 @@
       }
       return arr;
     }
-    function roundName(len) {
-      if (len === 32) return "32강";
-      if (len === 16) return "16강";
-      if (len === 8) return "8강";
-      if (len === 4) return "4강";
-      if (len === 2) return "결승";
+
+    function roundName(size) {
+      if (size === 32) return "32강";
+      if (size === 16) return "16강";
+      if (size === 8) return "8강";
+      if (size === 4) return "4강";
+      if (size === 2) return "결승";
       return "우승";
     }
 
-    /* -------------------------------
-       상태 값
-    --------------------------------*/
-    let selectedLicense = null;
-    let currentRound = [];
-    let nextRound = [];
-    let matchIndex = 0;
-    let winnerCar = null;
+    function initWorldcup() {
+      const initialSize = Math.min(32, baseCars.length); // 최대 32강
+      const shuffled = shuffle(baseCars);
+      const first = shuffled.slice(0, initialSize);
 
-    /* -------------------------------
-       스텝 전환
-    --------------------------------*/
-    const stepElems = {
-      1: document.getElementById("step1"),
-      2: document.getElementById("step2"),
-      3: document.getElementById("step3")
-    };
-    const stepHeaderElems = document.querySelectorAll(".step");
-
-    function setActiveStep(stepNum) {
-      Object.entries(stepElems).forEach(([num, el]) => {
-        el.classList.toggle("active", Number(num) === stepNum);
-      });
-      stepHeaderElems.forEach(el => {
-        const n = Number(el.dataset.step);
-        el.classList.toggle("active", n === stepNum);
-      });
-    }
-
-    /* -------------------------------
-       STEP 1 렌더링 & 동작
-    --------------------------------*/
-    const licenseGrid = document.getElementById("licenseGrid");
-    const step1NextBtn = document.getElementById("step1Next");
-
-    function renderLicenses() {
-      licenseGrid.innerHTML = "";
-      licenses.forEach(lic => {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.dataset.code = lic.code;
-
-        card.innerHTML = `
-          <div class="license-label">${lic.code} 타입</div>
-          <div class="license-name">${lic.title}</div>
-          <div class="license-desc">${lic.desc}</div>
-        `;
-
-        card.addEventListener("click", () => {
-          selectedLicense = lic;
-          document.querySelectorAll("#licenseGrid .card").forEach(c => {
-            c.classList.toggle("selected", c === card);
-          });
-          step1NextBtn.disabled = false;
-        });
-
-        licenseGrid.appendChild(card);
-      });
-    }
-
-    step1NextBtn.addEventListener("click", () => {
-      setActiveStep(2);
-    });
-
-    /* -------------------------------
-       STEP 2: 월드컵 로직
-       - 좌/우에 같은 차량이 나오지 않도록
-         currentRound를 순서대로 2개씩 묶는 구조로 구현
-    --------------------------------*/
-    const roundInfoEl = document.getElementById("roundInfo");
-    const matchEl = document.getElementById("match");
-    const winnerTextEl = document.getElementById("winnerText");
-    const restartWorldcupBtn = document.getElementById("restartWorldcup");
-    const goStep3Btn = document.getElementById("goStep3");
-
-    function startWorldcup() {
-      // 32강 맞추기 위해 32개만 사용 (baseCars가 32개이도록 맞춰둠)
-      const shuffled = shuffle(baseCars).slice(0, 32);
-      currentRound = shuffled;
-      nextRound = [];
-      matchIndex = 0;
-      winnerCar = null;
-      winnerTextEl.textContent = "";
-      goStep3Btn.disabled = true;
+      worldcupState = {
+        initialSize,
+        currentRound: first,
+        nextRound: [],
+        index: 0,
+        roundNumber: 1,
+        winner: null
+      };
       renderMatch();
-    }
-
-    function updateRoundInfo() {
-      if (currentRound.length > 1) {
-        roundInfoEl.textContent = `${roundName(currentRound.length)} · 남은 매치: ${currentRound.length / 2}개`;
-      } else {
-        roundInfoEl.textContent = "최종 결과";
-      }
     }
 
     function renderMatch() {
-      // 좌/우 중복 방지를 위해
-      // currentRound 배열에서 [matchIndex], [matchIndex+1] 순서대로 꺼내서 사용
-      matchEl.innerHTML = "";
-      updateRoundInfo();
+      const roundInfoEl = document.getElementById("roundInfo");
+      const matchGridEl = document.getElementById("matchGrid");
+      const roundProgEl = document.getElementById("roundProgress");
 
+      if (!worldcupState) {
+        roundInfoEl.textContent = "월드컵 설정 오류 (baseCars 확인 필요)";
+        matchGridEl.innerHTML = "";
+        roundProgEl.textContent = "";
+        return;
+      }
+
+      const { currentRound, index, initialSize } = worldcupState;
+
+      // 우승 확정
       if (currentRound.length === 1) {
-        winnerCar = currentRound[0];
-        matchEl.innerHTML = "";
-        winnerTextEl.textContent = `당신의 이상형 스포츠카는 "${winnerCar.name}" 입니다!`;
-        goStep3Btn.disabled = false;
+        const w = currentRound[0];
+        worldcupState.winner = w;
+        roundInfoEl.textContent = `우승 – ${w.name}`;
+        matchGridEl.innerHTML = "";
+        roundProgEl.textContent = "우측 3단계에서 상세 결과와 유료 비용, 공유 링크를 확인할 수 있다.";
+        // 바로 결과 단계로
+        buildFinalResultAndRender();
+        setStep(3);
         return;
       }
 
-      const carA = currentRound[matchIndex];
-      const carB = currentRound[matchIndex + 1];
+      // 현재 라운드 정보
+      const rn = roundName(currentRound.length);
+      const totalPairs = currentRound.length / 2;
+      const currentPair = Math.floor(index / 2) + 1;
+      roundInfoEl.textContent = `${rn} – 매치 ${currentPair} / ${totalPairs}`;
 
-      // 방어 코드: 혹시라도 undefined가 나오면 종료
-      if (!carA || !carB || carA === carB) {
-        winnerCar = carA || carB;
-        currentRound = [winnerCar];
-        renderMatch();
-        return;
-      }
+      // 현재 매치업
+      const carA = currentRound[index];
+      const carB = currentRound[index + 1];
 
-      const cardHtml = (car, sideLabel) => `
-        <div class="car-card-inner">
-          <img src="${car.img}" alt="${car.name}" loading="lazy" />
-          <div class="car-name">${car.name}</div>
-          <div class="car-class">${car.cls}</div>
-          <div class="car-tags">#${car.tags.join(" #")}</div>
-          <div class="car-hint">${sideLabel} · 이 차가 더 끌리면 클릭!</div>
-        </div>
+      matchGridEl.innerHTML = `
+        ${renderCarCardHTML(carA, "left")}
+        ${renderCarCardHTML(carB, "right")}
       `;
 
-      const cardA = document.createElement("div");
-      cardA.className = "car-card";
-      cardA.innerHTML = cardHtml(carA, "왼쪽");
+      // 클릭 핸들러
+      const leftCard = document.querySelector('.car-card[data-pos="left"]');
+      const rightCard = document.querySelector('.car-card[data-pos="right"]');
 
-      const cardB = document.createElement("div");
-      cardB.className = "car-card";
-      cardB.innerHTML = cardHtml(carB, "오른쪽");
+      leftCard.onclick = () => chooseWinner(carA);
+      rightCard.onclick = () => chooseWinner(carB);
 
-      cardA.addEventListener("click", () => chooseWinner(carA));
-      cardB.addEventListener("click", () => chooseWinner(carB));
-
-      matchEl.appendChild(cardA);
-      matchEl.appendChild(cardB);
+      roundProgEl.textContent = `한 매치에서 같은 차가 좌/우 중복되지 않도록 고정된 대진을 사용한다. 선택한 차만 다음 라운드로 진출.`;
     }
 
-    function chooseWinner(winner) {
-      nextRound.push(winner);
-      matchIndex += 2;
+    function renderCarCardHTML(car, pos) {
+      const tags = (car.tags || []).slice(0, 6).map(t => `<span class="tag">#${t}</span>`).join("");
+      const safeImg = car.img || "";
+      return `
+        <div class="car-card" data-pos="${pos}">
+          <div class="car-image-wrap">
+            ${safeImg ? `<img src="${safeImg}" alt="${car.name} 이미지" loading="lazy" />` : ""}
+          </div>
+          <div class="car-content">
+            <div class="car-name">${car.name}</div>
+            <div class="car-class">${car.cls || ""}</div>
+            <div class="car-tags">${tags}</div>
+          </div>
+        </div>
+      `;
+    }
 
-      if (matchIndex >= currentRound.length) {
-        // 라운드 종료 → 다음 라운드 세팅
-        currentRound = nextRound;
-        nextRound = [];
-        matchIndex = 0;
+    function chooseWinner(car) {
+      if (!worldcupState) return;
+      worldcupState.nextRound.push(car);
+      worldcupState.index += 2;
+
+      // 라운드 끝
+      if (worldcupState.index >= worldcupState.currentRound.length) {
+        worldcupState.currentRound = worldcupState.nextRound;
+        worldcupState.nextRound = [];
+        worldcupState.index = 0;
+        worldcupState.roundNumber += 1;
       }
-
       renderMatch();
     }
 
-    restartWorldcupBtn.addEventListener("click", () => {
-      startWorldcup();
-    });
+    // ===============================
+    // 7. STEP 3 – 비용 계산 + 결과 생성
+    // ===============================
+    function computeCostSummary(winnerCar) {
+      // B클래스 기준 GT3 시리즈 1개 풀 시즌 가정.
+      const CAR_PRICE = 11.95;      // 차량 1대
+      const TRACK_PRICE = 14.95;    // 트랙 1개
+      const TRACK_COUNT = 11;       // 12주 중 1~2주 휴식/스킵 감안
+      const DISCOUNT_RATE = 0.15;   // 6개 이상 구매 할인 가정
+      const DISCOUNT_THRESHOLD = 6;
 
-    goStep3Btn.addEventListener("click", () => {
-      if (!winnerCar) return;
-      setActiveStep(3);
-      fillSummaryAndPrice();
-    });
+      const carCount = 1;
+      const trackCount = TRACK_COUNT;
 
-    /* -------------------------------
-       STEP 3: 요약 & 비용 계산
-    --------------------------------*/
-    const summaryLicenseEl = document.getElementById("summaryLicense");
-    const summaryCarEl = document.getElementById("summaryCar");
-    const priceBodyEl = document.getElementById("priceBody");
-    const backToStep2Btn = document.getElementById("backToStep2");
+      const carCost = CAR_PRICE * carCount;
+      const trackCost = TRACK_PRICE * trackCount;
+      const total = carCost + trackCost;
 
-    function fillSummaryAndPrice() {
-      if (selectedLicense) {
-        summaryLicenseEl.textContent = `레이스 성향: ${selectedLicense.title}`;
-      } else {
-        summaryLicenseEl.textContent = "레이스 성향: (선택 안 함)";
+      let discountedTotal = total;
+      const itemCountForDiscount = carCount + trackCount;
+      if (itemCountForDiscount >= DISCOUNT_THRESHOLD) {
+        discountedTotal = total * (1 - DISCOUNT_RATE);
       }
 
-      if (winnerCar) {
-        summaryCarEl.textContent = `이상형 스포츠카: ${winnerCar.name} (${winnerCar.cls})`;
+      return {
+        winnerName: winnerCar ? winnerCar.name : null,
+        carCost,
+        trackCost,
+        total,
+        discountedTotal,
+        assumptions: {
+          carCount,
+          trackCount,
+          carPriceEach: CAR_PRICE,
+          trackPriceEach: TRACK_PRICE,
+          discountRate: DISCOUNT_RATE,
+          discountThreshold: DISCOUNT_THRESHOLD
+        }
+      };
+    }
+
+    function buildFinalResultAndRender() {
+      // 인터랙티브 모드에서 호출 (라이센스 + 월드컵 + 비용 삼박자)
+      const winner = worldcupState ? worldcupState.winner : null;
+
+      const cost = computeCostSummary(winner || baseCars[0]);
+
+      finalResult = {
+        version: "1",
+        license: selectedLicense ? selectedLicense.id : null,
+        licenseTitle: selectedLicense ? selectedLicense.title : null,
+        licenseDesc: selectedLicense ? selectedLicense.desc : null,
+        licenseDetail: selectedLicense ? selectedLicense.detail : null,
+        winner: winner
+          ? {
+              name: winner.name,
+              cls: winner.cls,
+              tags: winner.tags || [],
+              img: winner.img || ""
+            }
+          : null,
+        cost
+      };
+
+      renderResultPanels(finalResult);
+      buildShareLink(finalResult);
+    }
+
+    function renderResultPanels(result) {
+      const licEl = document.getElementById("licenseResultBody");
+      const wcEl = document.getElementById("worldcupResultBody");
+      const costEl = document.getElementById("costResultBody");
+
+      // ① 라이센스
+      if (result.license) {
+        licEl.innerHTML = `
+          <div class="summary-line">
+            <span class="pill">
+              <strong>${result.license}</strong> 라이센스 성향
+            </span>
+          </div>
+          <div class="summary-line" style="margin-top:6px;">
+            <strong>${result.licenseTitle}</strong>
+          </div>
+          <div class="summary-line">${result.licenseDesc}</div>
+          <div class="summary-line small">${result.licenseDetail}</div>
+        `;
       } else {
-        summaryCarEl.textContent = "이상형 스포츠카: (월드컵 미진행)";
+        licEl.innerHTML = `
+          <div class="summary-line">
+            라이센스를 선택하지 않아서, 기본값으로 처리했다. (D성향 범퍼카 느낌)
+          </div>
+        `;
       }
 
-      const carTotal = PRICE_CAR;
-      const trackTotal = PRICE_TRACK * N_TRACKS;
-      const total = carTotal + trackTotal;
+      // ② 월드컵 결과
+      if (result.winner) {
+        const w = result.winner;
+        const tags = (w.tags || []).slice(0, 10).map(t => `<span class="tag">#${t}</span>`).join("");
+        wcEl.innerHTML = `
+          <div class="winner-badge">
+            <span>🏆 이상형 월드컵 우승</span>
+          </div>
+          <div class="car-card winner-highlight">
+            <div class="car-image-wrap">
+              ${w.img ? `<img src="${w.img}" alt="${w.name} 이미지" />` : ""}
+            </div>
+            <div class="car-content">
+              <div class="car-name">${w.name}</div>
+              <div class="car-class">${w.cls || ""}</div>
+              <div class="car-tags" style="margin-top:8px;">${tags}</div>
+            </div>
+          </div>
+          <div class="summary-line small" style="margin-top:8px;">
+            ※ 이 카드는 ‘당신의 플레이 스타일로 월드컵 끝까지 살아남은 이상형 스포츠카’를 의미한다.
+          </div>
+        `;
+      } else {
+        wcEl.innerHTML = `
+          <div class="summary-line">
+            월드컵을 건너뛰었기 때문에, 구체적인 우승 차량 정보는 비어 있다.
+          </div>
+        `;
+      }
 
-      priceBodyEl.innerHTML = `
-        <tr>
-          <td>GT 계열 차량 라이센스</td>
-          <td>1대</td>
-          <td>${PRICE_CAR.toFixed(2)}</td>
-          <td>${carTotal.toFixed(2)}</td>
-        </tr>
-        <tr>
-          <td>시즌 유료 트랙</td>
-          <td>${N_TRACKS}개</td>
-          <td>${PRICE_TRACK.toFixed(2)}</td>
-          <td>${trackTotal.toFixed(2)}</td>
-        </tr>
-        <tr>
-          <th>합계 (정가 기준)</th>
-          <th colspan="2"></th>
-          <th>${total.toFixed(2)}</th>
-        </tr>
+      // ③ 비용 요약
+      const c = result.cost;
+      const rowsHtml = `
+        <table class="cost-table">
+          <tr>
+            <th>항목</th>
+            <th class="num">수량 / 조건</th>
+            <th class="num">금액</th>
+          </tr>
+          <tr>
+            <td>GT/프로토 차량 라이센스</td>
+            <td class="num">${c.assumptions.carCount}대 × ${formatMoney(c.assumptions.carPriceEach)}</td>
+            <td class="num">${formatMoney(c.carCost)}</td>
+          </tr>
+          <tr>
+            <td>2025 S4 B클래스용 유료 트랙</td>
+            <td class="num">${c.assumptions.trackCount}개 × ${formatMoney(c.assumptions.trackPriceEach)}</td>
+            <td class="num">${formatMoney(c.trackCost)}</td>
+          </tr>
+          <tr>
+            <td>정가 합계</td>
+            <td class="num">차량 + 트랙</td>
+            <td class="num">${formatMoney(c.total)}</td>
+          </tr>
+          <tr>
+            <td>6개 이상 묶음 할인 가정</td>
+            <td class="num">약 ${(c.assumptions.discountRate * 100).toFixed(0)}% 할인</td>
+            <td class="num">${formatMoney(c.discountedTotal)}</td>
+          </tr>
+        </table>
+      `;
+
+      costEl.innerHTML = `
+        <div class="summary-line">
+          <strong>B 라이센스 기준, GT3/스포츠카 시즌 풀참여를 위한 유료 금액 대략치</strong>다.
+        </div>
+        <div class="summary-line">
+          <span class="pill">
+            기준: GT/프로토 차량 1대 + 유료 트랙 ${c.assumptions.trackCount}개
+          </span>
+        </div>
+        ${rowsHtml}
+        <div class="summary-line small" style="margin-top:6px;">
+          실제 지출은 보유 차량/트랙, 세일, 시즌별 스케줄에 따라 달라질 수 있다.  
+          여기서는 <strong>2025 Season 4 B클래스 스포츠카</strong>를 전제로 한, 이해를 돕기 위한 참고값이다.
+        </div>
       `;
     }
 
-    backToStep2Btn.addEventListener("click", () => {
-      setActiveStep(2);
-    });
+    // ===============================
+    // 8. 공유 링크 생성 / 로딩
+    // ===============================
+    function buildShareLink(result) {
+      const param = encodeResult(result);
+      const url = new URL(window.location.href);
+      url.searchParams.set("r", param);
+      // 다른 파라미터는 유지하되 r만 업데이트
+      const shareUrl = url.toString();
+      const input = document.getElementById("shareInput");
+      input.value = shareUrl;
+    }
 
-    /* -------------------------------
-       초기화
-    --------------------------------*/
-    renderLicenses();
-    startWorldcup();
+    function loadSharedResultIfExists() {
+      const params = new URLSearchParams(window.location.search);
+      const r = params.get("r");
+      if (!r) return false;
+
+      const decoded = decodeResult(r);
+      if (!decoded) return false;
+
+      finalResult = decoded;
+      renderResultPanels(finalResult);
+      // 공유 URL 다시 만들어서 입력창에 갱신 (그대로 복사 가능)
+      buildShareLink(finalResult);
+
+      // 배너
+      const banner = document.getElementById("sharedBanner");
+      banner.style.display = "block";
+      banner.textContent = "이 페이지는 누군가가 완료한 설문/월드컵 결과를 공유한 링크입니다. 상단 ‘처음부터 다시 하기’를 눌러 본인 기준으로 다시 진행할 수 있습니다.";
+
+      // 3단계로 바로 이동
+      setStep(3);
+      return true;
+    }
+
+    // ===============================
+    // 9. 이벤트 바인딩 & 초기화
+    // ===============================
+    document.addEventListener("DOMContentLoaded", () => {
+      renderLicenseCards();
+
+      // STEP1 → STEP2
+      document.getElementById("toStep2").addEventListener("click", () => {
+        if (!selectedLicense) return;
+        initWorldcup();
+        setStep(2);
+      });
+
+      // STEP2 ← STEP1
+      document.getElementById("backTo1").addEventListener("click", () => {
+        setStep(1);
+      });
+
+      // STEP2: 월드컵 건너뛰기 → 바로 결과 (라이센스 + 비용만)
+      document.getElementById("skipToResult").addEventListener("click", () => {
+        if (!selectedLicense) {
+          alert("먼저 1단계에서 라이센스를 선택해 주세요.");
+          return;
+        }
+        // winner 없이 비용만
+        const dummyWinner = baseCars[0];
+        const cost = computeCostSummary(dummyWinner);
+        finalResult = {
+          version: "1",
+          license: selectedLicense.id,
+          licenseTitle: selectedLicense.title,
+          licenseDesc: selectedLicense.desc,
+          licenseDetail: selectedLicense.detail,
+          winner: null,
+          cost
+        };
+        renderResultPanels(finalResult);
+        buildShareLink(finalResult);
+        setStep(3);
+      });
+
+      // STEP3: 복사
+      document.getElementById("copyShare").addEventListener("click", async () => {
+        const input = document.getElementById("shareInput");
+        input.select();
+        input.setSelectionRange(0, 99999);
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(input.value);
+          } else {
+            document.execCommand("copy");
+          }
+          alert("링크가 클립보드에 복사되었습니다.");
+        } catch (e) {
+          alert("복사에 실패했습니다. 수동으로 선택해서 복사해 주세요.");
+        }
+      });
+
+      // STEP3: 다시 시작
+      document.getElementById("restartAll").addEventListener("click", () => {
+        // URL의 r 파라미터 제거
+        const url = new URL(window.location.href);
+        url.searchParams.delete("r");
+        window.history.replaceState({}, "", url.toString());
+
+        selectedLicense = null;
+        worldcupState = null;
+        finalResult = null;
+        document.getElementById("sharedBanner").style.display = "none";
+        document.getElementById("shareInput").value = "";
+        document.getElementById("toStep2").disabled = true;
+        document.querySelectorAll(".license-card").forEach(c => c.classList.remove("selected"));
+        setStep(1);
+      });
+
+      // STEP3: 월드컵만 다시
+      document.getElementById("backTo2").addEventListener("click", () => {
+        if (!selectedLicense) {
+          alert("먼저 1단계에서 라이센스를 선택해 주세요.");
+          return;
+        }
+        initWorldcup();
+        setStep(2);
+      });
+
+      // 처음 로드 시, 공유 링크인지 먼저 확인
+      const shared = loadSharedResultIfExists();
+      if (!shared) {
+        setStep(1);
+      }
+    });
   </script>
 </body>
 </html>
