@@ -2,344 +2,494 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>iRacing 스포츠카 성향 설문 – Step 1</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>iRacing 성향 테스트 & 비용 계산</title>
   <style>
-    :root {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color-scheme: dark;
-    }
     body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: radial-gradient(circle at top, #1f2937 0, #020617 50%, #000 100%);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #020617;
       color: #e5e7eb;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
     }
-    .app {
+    .container {
+      max-width: 960px;
       width: 100%;
-      max-width: 900px;
-      padding: 24px 20px 32px;
+      padding: 24px;
       box-sizing: border-box;
     }
-    .card {
-      background: rgba(15,23,42,0.9);
-      border-radius: 24px;
-      border: 1px solid #1f2937;
-      padding: 24px 20px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.45);
-      backdrop-filter: blur(12px);
-    }
     h1 {
-      margin: 0 0 4px;
-      font-size: 26px;
-      text-align: center;
-    }
-    .subtitle {
-      text-align: center;
-      font-size: 14px;
-      color: #9ca3af;
-      margin-bottom: 20px;
-    }
-    .step-indicator {
-      text-align: center;
-      font-size: 13px;
-      color: #9ca3af;
+      font-size: 28px;
       margin-bottom: 8px;
     }
-    .step-indicator span {
-      font-weight: 600;
-      color: #facc15;
+    .subtitle {
+      color: #9ca3af;
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+    .step-indicator {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 12px;
+    }
+    .card {
+      background: #020617;
+      border-radius: 18px;
+      border: 1px solid #1f2937;
+      padding: 20px;
+      margin-bottom: 16px;
     }
     .license-list {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: 1fr;
       gap: 12px;
-      margin-bottom: 18px;
     }
-    @media (max-width: 640px) {
-      .license-list {
-        grid-template-columns: 1fr;
-      }
-    }
-    .license-card {
-      border-radius: 18px;
-      border: 1px solid #1f2937;
-      padding: 14px 14px 12px;
+    .license-option {
+      border-radius: 16px;
+      border: 1px solid #4b5563;
+      padding: 14px 16px;
       cursor: pointer;
-      transition: border-color 0.15s ease, background 0.15s ease, transform 0.12s ease;
-      background: #020617;
+      transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
     }
-    .license-card:hover {
-      border-color: #4f46e5;
-      transform: translateY(-2px);
+    .license-option:hover {
+      border-color: #60a5fa;
+      background: #0b1120;
+      transform: translateY(-1px);
     }
-    .license-card.active {
-      border-color: #f97316;
-      background: radial-gradient(circle at top left, #1e293b, #020617 60%);
-    }
-    .license-code {
-      font-size: 18px;
-      font-weight: 800;
-      margin-bottom: 2px;
-    }
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 11px;
-      padding: 2px 8px;
-      border-radius: 999px;
-      border: 1px solid #374151;
-      color: #9ca3af;
-      margin-bottom: 6px;
+    .license-option.selected {
+      border-color: #3b82f6;
+      background: #0b1120;
     }
     .license-title {
-      font-size: 14px;
-      font-weight: 600;
+      font-weight: 700;
       margin-bottom: 4px;
+    }
+    .license-tagline {
+      font-size: 13px;
+      color: #e5e7eb;
+      margin-bottom: 6px;
     }
     .license-desc {
-      font-size: 13px;
+      font-size: 12px;
       color: #9ca3af;
-      line-height: 1.5;
-    }
-    .detail-panel {
-      border-radius: 18px;
-      border: 1px solid #1f2937;
-      background: #020617;
-      padding: 14px 14px 12px;
-      margin-bottom: 16px;
-    }
-    .detail-title {
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-    .detail-body {
-      font-size: 13px;
-      color: #9ca3af;
-      line-height: 1.5;
-      margin-bottom: 10px;
-      white-space: pre-line;
     }
     .tag-section-title {
-      font-size: 13px;
       font-weight: 600;
-      margin-bottom: 4px;
+      margin: 12px 0 6px;
     }
-    .tags {
+    .tag-container {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: 8px;
     }
     .tag {
-      font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid #374151;
-      background: #020617;
-      color: #e5e7eb;
-    }
-    .tag.cls {
-      border-style: dashed;
-      color: #9ca3af;
-    }
-    .foot {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       font-size: 12px;
-      color: #6b7280;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #4b5563;
+      cursor: pointer;
+      user-select: none;
+      background: #020617;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    }
+    .tag:hover {
+      background: #0b1120;
+      border-color: #60a5fa;
+      transform: translateY(-1px);
+    }
+    .tag.selected {
+      background: #1d4ed8;
+      border-color: #3b82f6;
+    }
+    .tag-count {
+      font-size: 12px;
+      color: #9ca3af;
       margin-top: 4px;
     }
-    .next-btn {
-      border-radius: 999px;
-      padding: 8px 18px;
-      font-size: 13px;
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 16px;
+      gap: 8px;
+    }
+    .buttons-right {
+      margin-left: auto;
+      display: flex;
+      gap: 8px;
+    }
+    button {
       border: none;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 14px;
       cursor: pointer;
-      background: #4f46e5;
+      background: #1d4ed8;
       color: white;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: background 0.15s ease, transform 0.12s ease, box-shadow 0.12s ease;
+      transition: background 0.15s ease, transform 0.1s ease;
     }
-    .next-btn:disabled {
-      opacity: 0.4;
-      cursor: default;
-      box-shadow: none;
-      transform: none;
-    }
-    .next-btn:not(:disabled):hover {
-      background: #6366f1;
+    button:hover {
+      background: #2563eb;
       transform: translateY(-1px);
-      box-shadow: 0 8px 20px rgba(79,70,229,0.5);
+    }
+    button.secondary {
+      background: #374151;
+    }
+    button.secondary:hover {
+      background: #4b5563;
+    }
+    .result-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .result-block {
+      font-size: 14px;
+      line-height: 1.5;
+      margin-top: 6px;
+    }
+    .highlight {
+      color: #facc15;
+      font-weight: 600;
     }
   </style>
 </head>
 <body>
-  <main class="app">
-    <section class="card">
-      <div class="step-indicator">
-        Step <span>1</span> / 4 · 라이센스 성향 선택
-      </div>
-      <h1>iRacing 라이센스 성향 체크</h1>
-      <p class="subtitle">
-        지금 내 성향에 가장 가까운 라이센스를 골라보면,<br/>
-        나중에 이상형 월드컵 차량 추천과 매칭에 쓸 거예요.
-      </p>
+  <div class="container">
+    <h1>iRacing 성향 테스트 & 유료 컨텐츠 가이드</h1>
+    <div class="subtitle">
+      레이스 성향 → 차량 취향 → 2025 시즌4 기준 유료 차량/트랙 대략 비용까지 한 번에 확인해보세요.
+    </div>
 
-      <div class="license-list" id="licenseList"></div>
-
-      <div class="detail-panel" id="detailPanel">
-        <div class="detail-title">먼저 라이센스를 선택해 주세요.</div>
-        <div class="detail-body">
-선택한 라이센스에 맞춰:
-- 주행 분위기 설명
-- 추천 차량 태그 (예: GT3, MX-5, GR86 …)
-를 아래에 보여줄 거예요.
-        </div>
-        <div class="tag-section-title">추천 차량 태그</div>
-        <div class="tags" id="tagContainer">
-          <span class="tag cls">아직 선택된 라이센스가 없습니다.</span>
-        </div>
+    <!-- STEP 1 -->
+    <div id="step1" class="card">
+      <div class="step-indicator">STEP 1 · 레이스 성향 (라이센스 느낌)</div>
+      <div style="font-weight:600; margin-bottom:8px;">
+        Q1. 레이스할 때, 당신의 스타일은 어떤 쪽에 더 가깝나요?
       </div>
-
-      <div class="foot">
-        <span>이 단계에서 선택한 값은 다음 스텝의 설문/월드컵에 활용됩니다.</span>
-        <button class="next-btn" id="nextBtn" disabled>
-          다음 스텝으로 (준비 중)
-          <span>→</span>
-        </button>
+      <div class="license-list" id="licenseList">
+        <!-- JS에서 생성 -->
       </div>
-    </section>
-  </main>
+    </div>
+
+    <!-- STEP 2 -->
+    <div id="step2" class="card" style="display:none;">
+      <div class="step-indicator">STEP 2 · 차량 이상형 (태그 선택)</div>
+      <div style="font-weight:600; margin-bottom:8px;">
+        Q2. 아래 차량 중에서 마음에 드는 차를 골라주세요. (최대 3개)
+      </div>
+      <div class="tag-section-title">GT3</div>
+      <div class="tag-container" id="tags-gt3"></div>
+
+      <div class="tag-section-title">GT4</div>
+      <div class="tag-container" id="tags-gt4"></div>
+
+      <div class="tag-section-title">엔트리 / 컵 / 기타</div>
+      <div class="tag-container" id="tags-etc"></div>
+
+      <div class="tag-count" id="tagCount">선택한 차량: 0 / 3</div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div id="step3" class="card" style="display:none;">
+      <div class="step-indicator">STEP 3 · 2025 시즌4 기준 유료 컨텐츠 대략 비용</div>
+      <div class="result-title">당신에게 어울리는 레이싱 플랜</div>
+      <div id="resultText" class="result-block"></div>
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="buttons">
+      <button id="prevBtn" class="secondary" disabled>이전</button>
+      <div class="buttons-right">
+        <button id="nextBtn">다음</button>
+      </div>
+    </div>
+  </div>
 
   <script>
-    // 라이센스 데이터 + 주요 차량 태그
+    // --- 데이터 정의 ---
+
     const licenses = [
       {
-        code: "D",
-        level: "입문 · 로우 라이센스",
-        title: "범퍼카 존 (연습 & 멘탈 테스트 구간)",
-        desc: "• 아직 레이싱 자체가 낯설고, 사고를 겁내기보다는 몸으로 익히는 단계.\n• 사고 나도 '그럴 수 있지' 수준으로 웃으면서 넘기는 멘탈.\n• 레이스 매너보다는 차 컨트롤 익히기, 트래픽 적응이 우선.\n\n→ \"일단 부딪혀보면서 배우자\" 타입이라면 D 성향에 가까워요.",
-        tags: [
-          { type: "cls", label: "엔트리 / 로우 스피드" },
-          { type: "car", label: "Mazda MX-5 Cup" },
-          { type: "car", label: "Toyota GR86 Cup" },
-          { type: "car", label: "VW Jetta TDI Cup" },
-          { type: "car", label: "Ford Mustang FR500S" }
-        ]
+        id: "A",
+        title: "A 라이센스 – 젠틀맨 리그",
+        tagline: "깨끗한 레이싱 · 접촉 최소 · 전략/롱런 중심",
+        desc: "인시던트를 최대한 줄이고, 페이스와 타이어 관리, 피트 전략에 집중하는 스타일입니다. '상호 존중'이 가장 중요하며, 퀄리와 롱런 퀄리티를 즐기는 타입."
       },
       {
-        code: "C",
-        level: "미들 라이센스",
-        title: "전손 각오 코너 사바사 (하이리스크 하이리턴)",
-        desc: "• 배틀이 붙으면 브레이킹 포인트가 3m씩 앞으로 가는 타입.\n• 코너마다 상대 성향에 따라 사바사: 전손을 각오한 과감한 Dive도 불사.\n• 사고를 피하는 것보다는 빈틈을 찌르는 공격적인 주행을 선호.\n\n→ \"어차피 게임인데, 붙으면 양보는 없다\" 쪽이라면 C 성향.",
-        tags: [
-          { type: "cls", label: "GT4 / TCR / 어그레시브 로비" },
-          { type: "car", label: "Porsche 718 Cayman GT4" },
-          { type: "car", label: "Mercedes-AMG GT4" },
-          { type: "car", label: "Hyundai Elantra N TCR" },
-          { type: "car", label: "Honda Civic Type R TCR" }
-        ]
+        id: "B",
+        title: "B 라이센스 – 치열한 생존 경쟁",
+        tagline: "중상위권~중위권에서 끝까지 버티는 생존 레이스",
+        desc: "스타트/리스타트에서 과감하게 포지션을 노리고, 어느 정도의 접촉은 '레이스 인시던트'로 받아들이는 스타일입니다. 끝까지 살아남는 게 중요."
       },
       {
-        code: "B",
-        level: "상위 미들 · 메인 스트리트",
-        title: "치열한 생존 경쟁 (SR과 포지션 둘 다 챙기기)",
-        desc: "• SR(세이프티)도 중요하지만, 포지션과 페이스도 포기 못 하는 타입.\n• 무조건 들이받지는 않지만, 빈틈 보이면 늦지 않게 과감히 시도.\n• GT3·GTE 같은 메이저 클래스에서 솔로/멀티 레이스 즐기기 좋아함.\n\n→ \"안전하게만 타자 vs 죽어도 추월\" 사이 어딘가에 있는 현실적인 레이서.",
-        tags: [
-          { type: "cls", label: "GT3 / GTE / LMP2 메인급" },
-          { type: "car", label: "Ferrari 296 GT3" },
-          { type: "car", label: "Porsche 911 GT3 R (992)" },
-          { type: "car", label: "BMW M4 GT3" },
-          { type: "car", label: "Mercedes-AMG GT3 2020" },
-          { type: "car", label: "Ferrari 488 GTE" },
-          { type: "car", label: "Dallara P217 LMP2" }
-        ]
+        id: "C",
+        title: "C 라이센스 – 전손을 각오한 코너 사바사",
+        tagline: "Dive도 불사, 모 아니면 도 승부욕",
+        desc: "기회가 보이면 과감하게 찔러보는 공격적인 스타일로, 전손도 감수하면서 '여기선 한 번 들어가야지'를 시전하는 타입."
       },
       {
-        code: "A",
-        level: "상위 라이센스",
-        title: "젠틀맨 리그 (클린 레이싱 최우선)",
-        desc: "• 사고를 내느니 포지션 하나 양보하더라도 클린하게 가는 타입.\n• 롱런 페이스, 타이어/연료 관리, 전략 같은 요소를 즐김.\n• 멀티클래스에서 백마커/블루 플래그 매너를 중시.\n\n→ \"실제 모터스포츠 매너처럼 즐기고 싶다\"면 A 성향에 가깝습니다.",
-        tags: [
-          { type: "cls", label: "GTP / 고SR 로비 / 리그 레이스" },
-          { type: "car", label: "BMW M Hybrid V8" },
-          { type: "car", label: "Chevrolet Corvette Z06 GT3.R" },
-          { type: "car", label: "Aston Martin Vantage GT3" },
-          { type: "car", label: "Porsche 911 GT3 Cup (992)" }
-        ]
+        id: "D",
+        title: "D 라이센스 – 범퍼카 모드",
+        tagline: "그냥 재밌게 들이받고 웃으며 레이싱",
+        desc: "인시던트 카운트는 덜 중요하고, 그냥 다 같이 부딪히면서 난전 그 자체를 즐기는 스타일입니다. 승패보다 '웃긴 장면'이 더 기억에 남는 타입."
       }
     ];
 
-    const licenseListEl = document.getElementById("licenseList");
-    const detailPanelEl = document.getElementById("detailPanel");
-    const tagContainerEl = document.getElementById("tagContainer");
-    const nextBtn = document.getElementById("nextBtn");
+    const carTags = {
+      gt3: [
+        "BMW M4 GT3",
+        "Ferrari 296 GT3",
+        "Porsche 911 GT3 R (992)",
+        "Lamborghini Huracán GT3 EVO",
+        "Mercedes-AMG GT3 2020",
+        "Audi R8 LMS GT3",
+        "McLaren 720S GT3 EVO",
+        "Chevrolet Corvette Z06 GT3.R"
+      ],
+      gt4: [
+        "BMW M4 GT4",
+        "Porsche 718 Cayman GT4",
+        "Mercedes-AMG GT4",
+        "Aston Martin Vantage GT4",
+        "McLaren 570S GT4",
+        "Audi R8 LMS GT4",
+        "Ford Mustang GT4"
+      ],
+      etc: [
+        "Toyota GR86 Cup",
+        "Global Mazda MX-5 Cup",
+        "Porsche 911 GT3 Cup (992)",
+        "Ferrari 296 Challenge",
+        "BMW M2 CS Racing",
+        "Radical SR10",
+        "Hyundai Elantra N TCR",
+        "Honda Civic Type R TCR",
+        "BMW M Hybrid V8"
+      ]
+    };
 
-    let selectedCode = null;
+    // --- 상태 ---
+
+    let currentStep = 1;
+    let selectedLicense = null;
+    let selectedCars = new Set();
+    const maxCars = 3;
+
+    // --- DOM reference ---
+
+    const step1El = document.getElementById("step1");
+    const step2El = document.getElementById("step2");
+    const step3El = document.getElementById("step3");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const tagCountEl = document.getElementById("tagCount");
+    const resultTextEl = document.getElementById("resultText");
+    const licenseListEl = document.getElementById("licenseList");
+
+    // --- 함수: 라이센스 UI 생성 ---
 
     function renderLicenses() {
       licenseListEl.innerHTML = "";
       licenses.forEach(lic => {
         const div = document.createElement("div");
-        div.className = "license-card";
-        div.dataset.code = lic.code;
+        div.className = "license-option";
+        div.dataset.id = lic.id;
+
+        if (selectedLicense === lic.id) {
+          div.classList.add("selected");
+        }
+
         div.innerHTML = `
-          <div class="license-code">라이센스 ${lic.code}</div>
-          <div class="badge">
-            <span>${lic.level}</span>
-          </div>
           <div class="license-title">${lic.title}</div>
-          <div class="license-desc">${lic.desc.split("\n")[0]}</div>
+          <div class="license-tagline">${lic.tagline}</div>
+          <div class="license-desc">${lic.desc}</div>
         `;
-        div.addEventListener("click", () => selectLicense(lic.code));
+
+        div.addEventListener("click", () => {
+          selectedLicense = lic.id;
+          renderLicenses();
+        });
+
         licenseListEl.appendChild(div);
       });
     }
 
-    function selectLicense(code) {
-      selectedCode = code;
-      // 카드 active 반영
-      Array.from(document.getElementsByClassName("license-card")).forEach(card => {
-        if (card.dataset.code === code) card.classList.add("active");
-        else card.classList.remove("active");
+    // --- 함수: 태그 UI 생성 ---
+
+    function createTagElement(name, group) {
+      const span = document.createElement("span");
+      span.className = "tag";
+      span.textContent = "#" + name;
+      span.dataset.name = name;
+      span.dataset.group = group;
+
+      if (selectedCars.has(name)) {
+        span.classList.add("selected");
+      }
+
+      span.addEventListener("click", () => {
+        if (selectedCars.has(name)) {
+          selectedCars.delete(name);
+          span.classList.remove("selected");
+        } else {
+          if (selectedCars.size >= maxCars) {
+            alert(`최대 ${maxCars}개까지 선택할 수 있습니다.`);
+            return;
+          }
+          selectedCars.add(name);
+          span.classList.add("selected");
+        }
+        updateTagCount();
       });
 
-      const lic = licenses.find(l => l.code === code);
-      if (!lic) return;
-
-      // 상세 설명 반영
-      detailPanelEl.querySelector(".detail-title").textContent =
-        `라이센스 ${lic.code} – ${lic.level}`;
-      detailPanelEl.querySelector(".detail-body").textContent = lic.desc;
-
-      // 태그 렌더링
-      tagContainerEl.innerHTML = "";
-      lic.tags.forEach(tag => {
-        const span = document.createElement("span");
-        span.className = "tag" + (tag.type === "cls" ? " cls" : "");
-        span.textContent = tag.label;
-        tagContainerEl.appendChild(span);
-      });
-
-      nextBtn.disabled = false;
+      return span;
     }
 
-    nextBtn.addEventListener("click", () => {
-      if (!selectedCode) return;
-      alert(
-        `지금은 1단계만 구현된 상태입니다.\n\n선택한 라이센스: ${selectedCode}\n\n다음 단계에서는:\n- 주행 시간대, 선호 트랙 스타일\n- 차량 난이도 선호\n등을 받아서 이상형 월드컵 32강 후보를 자동 추천하는 로직으로 확장할 수 있어요.`
-      );
+    function renderTags() {
+      const gt3El = document.getElementById("tags-gt3");
+      const gt4El = document.getElementById("tags-gt4");
+      const etcEl = document.getElementById("tags-etc");
+
+      gt3El.innerHTML = "";
+      gt4El.innerHTML = "";
+      etcEl.innerHTML = "";
+
+      carTags.gt3.forEach(name => {
+        gt3El.appendChild(createTagElement(name, "gt3"));
+      });
+      carTags.gt4.forEach(name => {
+        gt4El.appendChild(createTagElement(name, "gt4"));
+      });
+      carTags.etc.forEach(name => {
+        etcEl.appendChild(createTagElement(name, "etc"));
+      });
+
+      updateTagCount();
+    }
+
+    function updateTagCount() {
+      tagCountEl.textContent = `선택한 차량: ${selectedCars.size} / ${maxCars}`;
+    }
+
+    // --- 스텝 전환 ---
+
+    function updateStepVisibility() {
+      step1El.style.display = currentStep === 1 ? "block" : "none";
+      step2El.style.display = currentStep === 2 ? "block" : "none";
+      step3El.style.display = currentStep === 3 ? "block" : "none";
+
+      prevBtn.disabled = currentStep === 1;
+      nextBtn.textContent = currentStep === 3 ? "처음으로" : "다음";
+    }
+
+    function validateCurrentStep() {
+      if (currentStep === 1 && !selectedLicense) {
+        alert("레이스 성향(라이센스 스타일)을 하나 선택해주세요.");
+        return false;
+      }
+      if (currentStep === 2 && selectedCars.size === 0) {
+        alert("마음에 드는 차량을 적어도 1개 이상 선택해주세요.");
+        return false;
+      }
+      return true;
+    }
+
+    // --- 결과 생성 로직 (Step3 텍스트) ---
+
+    function buildResultText() {
+      const lic = selectedLicense;
+      const cars = Array.from(selectedCars);
+      const mainClass =
+        cars.some(c => carTags.gt3.includes(c)) ? "GT3" :
+        cars.some(c => carTags.gt4.includes(c)) ? "GT4" :
+        "엔트리/혼합";
+
+      let styleText = "";
+      let recommendText = "";
+      let rangeText = "";
+
+      // 성향 설명
+      if (lic === "A") {
+        styleText = "깨끗한 레이싱과 롱런, 전략을 중시하는 A 라이센스 스타일입니다. 인시던트를 최대한 줄이고, 안정적인 페이스로 즐기기에 어울립니다.";
+      } else if (lic === "B") {
+        styleText = "스타트와 리스타트, 치열한 포지션 싸움을 즐기는 B 라이센스 스타일입니다. 과감하지만 완전 막장은 아닌, 생존 경쟁 중심의 레이스에 적합합니다.";
+      } else if (lic === "C") {
+        styleText = "Dive도 불사하는 공격적인 C 라이센스 스타일입니다. 모 아니면 도, 승부욕이 강한 타입으로 박진감 넘치는 배틀을 선호합니다.";
+      } else if (lic === "D") {
+        styleText = "인시던트보다 재미가 중요한 D 라이센스 스타일입니다. 범퍼카 느낌의 난전을 즐기고, 웃긴 장면이 더 기억에 남는 타입입니다.";
+      }
+
+      // 메인 차량 클래스에 따른 추천
+      if (mainClass === "GT3") {
+        recommendText = "선택하신 차량이 GT3 중심이라면, B 클래스 기준으로 GT3 Challenge, GT3 Regional Tour, GT Sprint, IMSA Endurance 같은 시리즈를 중점적으로 즐기게 될 가능성이 높습니다.";
+        rangeText = "2025 시즌4 기준으로 GT3 차량 1대와 유료 트랙 10~12개 정도를 목표로 하면, 정가 기준 대략 160~190달러 수준이며, 6개 이상 묶음 구매 할인 등을 활용하면 실제 지출은 약 140~160달러 선에 맞출 수 있습니다.";
+      } else if (mainClass === "GT4") {
+        recommendText = "GT4 중심 취향이라면, 비교적 컨트롤이 수월하면서도 레이스 퀄리티는 높은 GT4 시리즈를 위주로 달리게 될 가능성이 큽니다. GT3와 일정이 일부 겹치는 경우도 많아, 장기적으로는 GT3와 GT4를 섞어서 즐길 수도 있습니다.";
+        rangeText = "GT4 차량 1대와 유료 트랙 8~10개 정도로 시작하면, 정가 기준 130~160달러 정도를 예상할 수 있으며, 할인과 트랙 겹침을 고려하면 실제 지출은 약 110~140달러 내외로 줄어들 수 있습니다.";
+      } else {
+        recommendText = "엔트리/컵/혼합 차량 위주라면, MX-5, GR86, 컵카, TCR 등을 섞어 C~B 라이센스 구간에서 다양한 단판/스프린트 레이스를 경험하기에 좋습니다. 접촉이 많고 난전이 자주 나오는 레이스도 자연스럽게 접하게 됩니다.";
+        rangeText = "이 경우 차량 2~3대와 유료 트랙 6~8개 정도를 조합하면, 정가 기준 100~150달러 사이, 할인과 트랙 공유를 감안하면 대략 80~130달러 정도의 지출로 한 시즌을 충분히 즐길 수 있습니다.";
+      }
+
+      const carList = cars.join(", ");
+
+      resultTextEl.innerHTML = `
+        <div class="result-block">
+          <span class="highlight">선택한 성향:</span> ${lic} 라이센스 스타일<br/>
+          <span class="highlight">선택한 차량:</span> ${carList || "선택된 차량 없음"}
+        </div>
+        <div class="result-block">${styleText}</div>
+        <div class="result-block">${recommendText}</div>
+        <div class="result-block">
+          <span class="highlight">예상 유료 컨텐츠 비용 범위:</span><br/>
+          ${rangeText}
+        </div>
+        <div class="result-block" style="font-size:12px; color:#9ca3af; margin-top:8px;">
+          * 위 금액은 2025 시즌4 기준 시리즈 구성을 바탕으로 한 대략적인 예시이며,
+          실제 지출은 할인, 보유 컨텐츠, 참여하지 않는 레이싱 주차 등에 따라 더 낮아질 수 있습니다.
+        </div>
+      `;
+    }
+
+    // --- 이벤트 ---
+
+    prevBtn.addEventListener("click", () => {
+      if (currentStep > 1) {
+        currentStep--;
+        updateStepVisibility();
+      }
     });
 
+    nextBtn.addEventListener("click", () => {
+      if (currentStep === 3) {
+        // 처음으로 리셋
+        currentStep = 1;
+        selectedLicense = null;
+        selectedCars.clear();
+        renderLicenses();
+        renderTags();
+        updateStepVisibility();
+        return;
+      }
+
+      if (!validateCurrentStep()) return;
+
+      if (currentStep === 2) {
+        // Step3 들어가기 전에 결과 텍스트 생성
+        buildResultText();
+      }
+
+      currentStep++;
+      updateStepVisibility();
+    });
+
+    // --- 초기 렌더링 ---
+
     renderLicenses();
+    renderTags();
+    updateStepVisibility();
   </script>
 </body>
 </html>
