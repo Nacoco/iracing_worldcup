@@ -2,12 +2,9 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>iRacing 레이스 성향 & 스포츠카 이상형 월드컵</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>iRacing 스포츠카 설문 & 이상형 월드컵</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -15,16 +12,23 @@
       color: #e5e7eb;
       display: flex;
       justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 24px;
     }
     .app {
-      max-width: 1080px;
       width: 100%;
-      padding: 24px 16px 40px;
+      max-width: 1000px;
+      background: #020617;
+      border-radius: 24px;
+      border: 1px solid #1f2937;
+      padding: 24px 24px 32px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
     }
     h1 {
-      font-size: 26px;
+      margin: 0 0 8px;
+      font-size: 28px;
       text-align: center;
-      margin: 8px 0 4px;
     }
     .subtitle {
       text-align: center;
@@ -32,778 +36,920 @@
       color: #9ca3af;
       margin-bottom: 24px;
     }
+
+    /* step indicator */
     .steps {
       display: flex;
-      gap: 8px;
-      justify-content: center;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    .step-pill {
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      border: 1px solid #1f2937;
-      background: #020617;
-      color: #9ca3af;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .step-pill.active {
-      border-color: #38bdf8;
-      background: #0f172a;
-      color: #e5e7eb;
-    }
-    .step-number {
-      background: #111827;
-      border-radius: 999px;
-      padding: 2px 7px;
-      font-size: 11px;
-    }
-    .step-pill.active .step-number {
-      background: #0369a1;
-    }
-
-    section {
-      margin-bottom: 32px;
-      padding: 16px 16px 20px;
-      border-radius: 18px;
-      border: 1px solid #1f2937;
-      background: radial-gradient(circle at top, rgba(15,118,110,0.18), transparent 60%);
-    }
-    section.inactive {
-      opacity: 0.4;
-    }
-    section h2 {
-      font-size: 18px;
-      margin-top: 0;
-      margin-bottom: 8px;
-    }
-    .section-desc {
-      font-size: 13px;
-      color: #9ca3af;
-      margin-bottom: 16px;
-    }
-
-    /* Step 1 */
-    .license-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-    .license-card {
-      border-radius: 16px;
-      border: 1px solid #1f2937;
-      padding: 14px 14px 16px;
-      background: #020617;
-      cursor: pointer;
-      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease, background 0.12s ease;
-    }
-    .license-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 14px 30px rgba(0,0,0,0.55);
-      border-color: #4b5563;
-      background: #030712;
-    }
-    .license-card.selected {
-      border-color: #38bdf8;
-      box-shadow: 0 0 0 1px rgba(56,189,248,0.3);
-      background: radial-gradient(circle at top, rgba(56,189,248,0.1), #020617);
-    }
-    .license-header {
-      display: flex;
-      align-items: center;
       justify-content: space-between;
-      margin-bottom: 8px;
+      gap: 8px;
+      margin-bottom: 24px;
+      font-size: 13px;
     }
-    .license-badge {
-      font-weight: 800;
-      font-size: 18px;
-      padding: 4px 10px;
+    .step {
+      flex: 1;
+      padding: 8px 10px;
       border-radius: 999px;
-      background: #111827;
       border: 1px solid #1f2937;
+      text-align: center;
+      color: #9ca3af;
+      background: #020617;
     }
-    .license-title {
-      font-size: 14px;
+    .step.active {
+      border-color: #3b82f6;
+      background: radial-gradient(circle at top, #1d4ed8 0, #020617 60%);
+      color: #f9fafb;
       font-weight: 600;
     }
-    .license-body {
-      font-size: 13px;
-      color: #d1d5db;
-      line-height: 1.5;
+
+    .step-title {
+      font-weight: 600;
+      margin-bottom: 2px;
     }
-    .license-note {
-      font-size: 12px;
-      color: #9ca3af;
-      margin-top: 6px;
-    }
-    .license-result {
-      margin-top: 12px;
-      font-size: 13px;
-      color: #a5b4fc;
+    .step-desc {
+      font-size: 11px;
     }
 
-    .btn-row {
-      margin-top: 14px;
+    /* generic buttons */
+    .buttons {
       display: flex;
       justify-content: flex-end;
       gap: 8px;
-      flex-wrap: wrap;
+      margin-top: 16px;
     }
     button {
-      border: none;
       border-radius: 999px;
-      padding: 7px 16px;
-      font-size: 13px;
+      border: none;
       cursor: pointer;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 500;
       background: #1d4ed8;
       color: #f9fafb;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: background 0.12s ease, transform 0.08s ease, box-shadow 0.12s ease;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+    button.secondary {
+      background: #374151;
     }
     button:hover {
       background: #2563eb;
       transform: translateY(-1px);
-      box-shadow: 0 8px 18px rgba(15,23,42,0.6);
-    }
-    button.secondary {
-      background: #111827;
-      color: #e5e7eb;
     }
     button.secondary:hover {
-      background: #1f2937;
+      background: #4b5563;
     }
     button:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-      box-shadow: none;
+      opacity: 0.4;
+      cursor: default;
       transform: none;
     }
 
-    /* Step 2 */
-    .match-info {
-      font-size: 13px;
-      color: #9ca3af;
-      margin-bottom: 10px;
+    /* step containers */
+    .step-container {
+      display: none;
     }
-    .match-grid {
+    .step-container.active {
+      display: block;
+    }
+
+    /* STEP 1: 라이센스 성향 */
+    .license-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-      margin-bottom: 10px;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 16px;
     }
-    .car-card {
+    @media (max-width: 720px) {
+      .license-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .card {
+      background: #020617;
       border-radius: 18px;
       border: 1px solid #1f2937;
-      background: #020617;
-      padding: 14px 14px 16px;
+      padding: 16px 18px;
       cursor: pointer;
-      text-align: left;
-      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+      border-color: #4b5563;
+    }
+    .card.selected {
+      border-color: #3b82f6;
+      background: radial-gradient(circle at top, rgba(37,99,235,0.25), #020617);
+    }
+    .license-label {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 4px;
+    }
+    .license-name {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .license-desc {
+      font-size: 13px;
+      color: #d1d5db;
+      line-height: 1.45;
+    }
+    .hint {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    /* STEP 2: 월드컵 */
+    .round-info {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .status-small {
+      text-align: center;
+      font-size: 12px;
+      color: #9ca3af;
+      margin-bottom: 16px;
+    }
+    .match {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 16px;
+    }
+    @media (max-width: 720px) {
+      .match {
+        grid-template-columns: 1fr;
+      }
+    }
+    .car-card {
+      background: #020617;
+      border-radius: 18px;
+      border: 1px solid #1f2937;
+      padding: 12px 12px 14px;
+      cursor: pointer;
+      text-align: center;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+      position: relative;
+      overflow: hidden;
     }
     .car-card:hover {
       transform: translateY(-2px);
-      box-shadow: 0 14px 30px rgba(0,0,0,0.55);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.7);
       border-color: #4b5563;
-      background: #030712;
+    }
+    .car-card img {
+      width: 100%;
+      max-height: 180px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 8px;
+      background: #020617;
     }
     .car-name {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 700;
       margin-bottom: 4px;
     }
     .car-class {
       font-size: 12px;
       color: #9ca3af;
+      margin-bottom: 4px;
+    }
+    .car-tags {
+      font-size: 11px;
+      color: #a5b4fc;
       margin-bottom: 6px;
     }
-    .tag-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      margin-bottom: 6px;
-    }
-    .tag {
-      font-size: 10px;
-      border-radius: 999px;
-      padding: 2px 7px;
-      border: 1px solid #1f2937;
-      background: #020617;
-      color: #9ca3af;
-    }
-    .car-note {
+    .car-hint {
       font-size: 11px;
       color: #6b7280;
     }
-    .wc-status {
-      font-size: 12px;
-      color: #9ca3af;
-      margin-top: 4px;
-    }
     .winner-text {
-      margin-top: 6px;
-      font-size: 15px;
-      font-weight: 800;
+      text-align: center;
+      margin-top: 16px;
+      font-size: 18px;
+      font-weight: 700;
       color: #facc15;
     }
 
-    /* Step 3 */
-    .summary-line {
-      font-size: 13px;
-      margin-bottom: 4px;
-    }
-    .summary-highlight {
-      color: #a5b4fc;
-      font-weight: 600;
-    }
-    .cost-box {
-      margin-top: 10px;
-      padding: 10px 12px;
-      border-radius: 14px;
-      background: #020617;
+    /* STEP 3: 요약 & 비용 */
+    .summary-box {
+      border-radius: 18px;
       border: 1px solid #1f2937;
-      font-size: 13px;
+      padding: 16px 18px;
+      background: radial-gradient(circle at top, rgba(55,65,81,0.3), #020617);
+      margin-bottom: 14px;
     }
-    .cost-line {
-      display: flex;
-      justify-content: space-between;
+    .summary-title {
+      font-size: 16px;
+      font-weight: 700;
       margin-bottom: 4px;
     }
-    .cost-label {
-      color: #9ca3af;
+    .summary-item {
+      font-size: 13px;
+      color: #d1d5db;
+      margin-bottom: 4px;
     }
-    .cost-value {
-      font-weight: 600;
+    .price-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 13px;
     }
-    .cost-note {
+    .price-table th,
+    .price-table td {
+      border: 1px solid #1f2937;
+      padding: 6px 8px;
+      text-align: right;
+    }
+    .price-table th:first-child,
+    .price-table td:first-child {
+      text-align: left;
+    }
+    .badge {
+      display: inline-block;
       font-size: 11px;
-      color: #6b7280;
-      margin-top: 4px;
-      line-height: 1.5;
-    }
-
-    @media (max-width: 720px) {
-      .license-grid {
-        grid-template-columns: 1fr;
-      }
-      .match-grid {
-        grid-template-columns: 1fr;
-      }
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #1f2937;
+      color: #e5e7eb;
+      margin-left: 4px;
     }
   </style>
 </head>
 <body>
   <div class="app">
-    <h1>iRacing 레이스 성향 & 스포츠카 이상형 월드컵</h1>
+    <h1>iRacing 스포츠카 설문 & 이상형 월드컵</h1>
     <div class="subtitle">
-      ① 레이스 성향 → ② 스포츠카 이상형 월드컵 → ③ 2025 시즌4 기준 유료 컨텐츠 대략 비용
+      레이스 성향 → 차량 이상형 월드컵 → 2025 시즌 4 기준 유료 트랙/차량 대략 비용까지 한 번에!
     </div>
 
     <div class="steps">
-      <div class="step-pill active" id="step-pill-1">
-        <span class="step-number">1</span> 레이스 성향
+      <div class="step active" data-step="1">
+        <div class="step-title">1단계 · 레이스 성향</div>
+        <div class="step-desc">게임 스타일 확인</div>
       </div>
-      <div class="step-pill" id="step-pill-2">
-        <span class="step-number">2</span> 차량 이상형 월드컵
+      <div class="step" data-step="2">
+        <div class="step-title">2단계 · 차량 월드컵</div>
+        <div class="step-desc">스포츠카 이상형</div>
       </div>
-      <div class="step-pill" id="step-pill-3">
-        <span class="step-number">3</span> 2025 S4 유료 컨텐츠 비용
+      <div class="step" data-step="3">
+        <div class="step-title">3단계 · 비용 개략</div>
+        <div class="step-desc">유료 트랙/차량</div>
       </div>
     </div>
 
-    <!-- STEP 1 -->
-    <section id="step1">
-      <h2>1단계. 레이스 성향(라이센스 타입)을 골라보세요</h2>
-      <div class="section-desc">
-        실제 iRacing 라이센스가 아니라, <b>당신의 레이스 스타일을 설명하는 가상의 라이센스</b>예요.<br />
-        느낌에 가장 가까운 걸 하나 골라주세요.
+    <!-- STEP 1: 라이센스 성향 -->
+    <div id="step1" class="step-container active">
+      <h2>1단계 – 레이스 성향 / 라이센스 느낌</h2>
+      <p style="font-size:13px;color:#d1d5db;margin-bottom:12px;">
+        실제 iRacing 라이센스와 1:1 매칭은 아니고, <b>분위기</b>에 맞춰 만든 컨셉이야.  
+        지금 내 플레이 스타일이 어디에 가까운지 골라봐.
+      </p>
+      <div class="license-grid" id="licenseGrid">
+        <!-- 카드 4개 -->
       </div>
-      <div class="license-grid">
-        <div class="license-card" data-license="A">
-          <div class="license-header">
-            <div>
-              <div class="license-title">A 라이센스 · 젠틀맨 리그</div>
-            </div>
-            <div class="license-badge">A</div>
-          </div>
-          <div class="license-body">
-            <b>클린 레이스</b>를 최우선으로 생각해요.  
-            약간 밀려도 참을 수 있고, 억지 dive bomb은 안 하는 타입.
-            <div class="license-note">
-              - 인시던트 적고, 롱런 페이스 관리 중시<br />
-              - “끝까지 같이 달리자” 분위기를 좋아함
-            </div>
-          </div>
-        </div>
-        <div class="license-card" data-license="B">
-          <div class="license-header">
-            <div class="license-title">B 라이센스 · 치열한 생존 경쟁</div>
-            <div class="license-badge">B</div>
-          </div>
-          <div class="license-body">
-            포지션 싸움, 사이드 바이 사이드 배틀을 좋아해요.  
-            <b>적당히 밀어붙이지만 선 넘지 않는</b> 생존 경쟁 타입.
-            <div class="license-note">
-              - 브레이킹 배틀, 디펜스/오버테이크 즐김<br />
-              - 인시던트는 조금 나도 레이스 재미 우선
-            </div>
-          </div>
-        </div>
-        <div class="license-card" data-license="C">
-          <div class="license-header">
-            <div class="license-title">C 라이센스 · 전손을 각오한 코너 사바사</div>
-            <div class="license-badge">C</div>
-          </div>
-          <div class="license-body">
-            코너마다 <b>“여기서 안 넣으면 오늘 못 잔다”</b> 마인드.  
-            전손도 감수하고 사바사 거는 타입.
-            <div class="license-note">
-              - 막코너 dive bomb 자주 고민함<br />
-              - 리스크 감수하고 하이라이트 노리는 스타일
-            </div>
-          </div>
-        </div>
-        <div class="license-card" data-license="D">
-          <div class="license-header">
-            <div class="license-title">D 라이센스 · 범퍼카 모드</div>
-            <div class="license-badge">D</div>
-          </div>
-          <div class="license-body">
-            진지한 레이스보다는 <b>친구들이랑 웃고 떠드는 범퍼카 느낌</b>.  
-            접촉도 개그 요소 정도로 받아들이는 타입.
-            <div class="license-note">
-              - 파티 레이스, 망겜(?)도 즐김<br />
-              - “이 판은 그냥 웃자” 마인드
-            </div>
-          </div>
-        </div>
+      <div class="hint">
+        선택하면 2단계에서 나오는 차량 월드컵 결과와 함께 <b>추천 방향</b>에 반영해줄게.
       </div>
-      <div class="license-result" id="license-result">
-        라이센스를 선택하면 2단계가 열립니다.
+      <div class="buttons">
+        <button id="step1Next" disabled>다음 (2단계로)</button>
       </div>
-      <div class="btn-row">
-        <button id="to-step2" disabled>
-          2단계로 이동 (차량 월드컵 시작)
-        </button>
-      </div>
-    </section>
+    </div>
 
-    <!-- STEP 2 -->
-    <section id="step2" class="inactive">
-      <h2>2단계. 스포츠카 이상형 월드컵 (32강)</h2>
-      <div class="section-desc">
-        iRacing <b>스포츠카 계열 공식 차량 DB</b>를 기반으로 한 32강 토너먼트예요.<br />
-        더 끌리는 차를 계속 고르다 보면 최종 이상형 1대가 남습니다.
-      </div>
-      <div class="match-info" id="match-info">
-        라이센스를 먼저 선택해 주세요.
-      </div>
-      <div class="btn-row" style="margin-top: 0; margin-bottom: 10px;">
-        <button id="start-wc" disabled>이상형 월드컵 시작하기</button>
-        <button id="shuffle-wc" class="secondary" disabled>차 목록 섞기</button>
-      </div>
-      <div class="match-grid" id="match-grid"></div>
-      <div class="wc-status" id="wc-status"></div>
-      <div class="winner-text" id="winner-text"></div>
-      <div class="btn-row">
-        <button id="restart-wc" class="secondary" disabled>월드컵 다시하기</button>
-      </div>
-    </section>
+    <!-- STEP 2: 차량 이상형 월드컵 -->
+    <div id="step2" class="step-container">
+      <h2>2단계 – iRacing 스포츠카 이상형 월드컵 (32강)</h2>
+      <p class="status-small">
+        좌/우에 <b>서로 다른 차량</b>만 나오도록 짰고,  
+        매 라운드에서 이긴 차만 다음 라운드로 진출하는 토너먼트 방식이야.
+      </p>
+      <div id="roundInfo" class="round-info"></div>
+      <div id="match" class="match"></div>
+      <div id="winnerText" class="winner-text"></div>
 
-    <!-- STEP 3 -->
-    <section id="step3" class="inactive">
-      <h2>3단계. 2025 시즌4 기준 유료 컨텐츠 대략 비용</h2>
-      <div class="section-desc">
-        2단계에서 뽑힌 차량을 기준으로,<br />
-        2025 시즌4 B클래스 스포츠카 시리즈(주로 GT3/GT4/컵/프로토 타입)를 풀시즌 뛴다고 가정했을 때의
-        <b>유료 차량/트랙 대략 비용</b>을 계산합니다.
+      <div class="buttons">
+        <button id="restartWorldcup" class="secondary">월드컵 다시하기</button>
+        <button id="goStep3" disabled>3단계로 (비용 보기)</button>
+      </div>
+      <p class="status-small">
+        * 이미지 URL은 placeholder로 넣어두었고, 나중에 iRacing 홈페이지에서 각 차량 페이지 이미지 주소를 복사해서 교체하면 돼요.
+      </p>
+    </div>
+
+    <!-- STEP 3: 요약 & 비용 -->
+    <div id="step3" class="step-container">
+      <h2>3단계 – 2025 시즌 4 기준 유료 컨텐츠 대략 비용</h2>
+
+      <div class="summary-box">
+        <div class="summary-title">내 선택 요약</div>
+        <div class="summary-item" id="summaryLicense"></div>
+        <div class="summary-item" id="summaryCar"></div>
       </div>
 
-      <div id="summary-text">
-        먼저 월드컵을 통해 차량을 선택해 주세요.
+      <div class="summary-box">
+        <div class="summary-title">
+          B 라이센스 스포츠카 (GT3 기준) 유료 컨텐츠 비용 대략
+          <span class="badge">2025 Season 4 가정</span>
+        </div>
+        <table class="price-table">
+          <thead>
+            <tr>
+              <th>항목</th>
+              <th>수량</th>
+              <th>단가 (USD)</th>
+              <th>합계 (USD)</th>
+            </tr>
+          </thead>
+          <tbody id="priceBody">
+            <!-- JS에서 채움 -->
+          </tbody>
+        </table>
+        <div class="summary-item" id="priceNote" style="margin-top:6px;font-size:12px;color:#9ca3af;">
+          ※ 정확한 가격/시즌 트랙 구성은 iRacing 공식 스케줄과 상시 변동 가능성을 고려해서  
+          <b>차량 1대 + 유료 트랙 11개</b> 기준으로 대략 계산했어.
+        </div>
       </div>
 
-      <div id="cost-box" class="cost-box" style="display:none;">
-        <div class="cost-line">
-          <div class="cost-label">차량 라이센스 (유료)</div>
-          <div class="cost-value" id="cost-car"></div>
-        </div>
-        <div class="cost-line">
-          <div class="cost-label">유료 트랙 개수 (추정)</div>
-          <div class="cost-value" id="cost-tracks-count"></div>
-        </div>
-        <div class="cost-line">
-          <div class="cost-label">트랙 라이센스 총액 (정가 기준)</div>
-          <div class="cost-value" id="cost-tracks"></div>
-        </div>
-        <div class="cost-line">
-          <div class="cost-label">합계 (정가 기준)</div>
-          <div class="cost-value" id="cost-total"></div>
-        </div>
-        <div class="cost-line">
-          <div class="cost-label">합계 (여러 개 묶음 구매 할인 추정)</div>
-          <div class="cost-value" id="cost-total-discount"></div>
-        </div>
-        <div class="cost-note">
-          ※ iRacing 공식 가격 기준: <b>차량 1대 $11.95, 트랙 1개 $14.95(대부분)</b>를 사용한 대략치입니다.<br />
-          ※ 시즌4 2025 스포츠카/GT3/GT4/컵/프로토 시리즈는 보통 <b>유료 트랙 9~12개</b>로 구성되어 있어,
-          차량/클래스별로 대표 시리즈를 기준으로 추정했습니다.<br />
-          ※ 실제 지출은 <b>무료 베이스 트랙 사용 여부, 일부 주차 불참, 세일/할인</b> 등에 따라 더 낮아질 수 있습니다.
-        </div>
+      <div class="buttons">
+        <button id="backToStep2" class="secondary">2단계 다시보기</button>
       </div>
-    </section>
+    </div>
   </div>
 
   <script>
-    // ====== 기본 상수 (iRacing 가격, 2025 기준 대략치) ======
-    const CAR_PRICE = 11.95;   // 유료 차량 1대
-    const TRACK_PRICE = 14.95; // 유료 트랙 1개 (상위구간 기준)
-    const BULK_DISCOUNT = 0.15; // 6개 이상 한 번에 사는 경우 15% 할인 가정
+    /* -------------------------------
+       데이터 정의
+    --------------------------------*/
 
-    // ====== 설문 상태 ======
-    const state = {
-      license: null,      // "A" | "B" | "C" | "D"
-      licenseLabel: null, // 텍스트
-      winnerCar: null     // { name, cls, tags, series, paidTracks, paidCar }
-    };
-
-    // ====== STEP 1: 레이스 성향 선택 ======
-    const licenseCards = document.querySelectorAll(".license-card");
-    const licenseResultEl = document.getElementById("license-result");
-    const toStep2Btn = document.getElementById("to-step2");
-
-    const licenseTexts = {
-      A: "A 라이센스 · 젠틀맨 리그",
-      B: "B 라이센스 · 치열한 생존 경쟁",
-      C: "C 라이센스 · 전손을 각오한 코너 사바사",
-      D: "D 라이센스 · 범퍼카 모드"
-    };
-
-    licenseCards.forEach(card => {
-      card.addEventListener("click", () => {
-        licenseCards.forEach(c => c.classList.remove("selected"));
-        card.classList.add("selected");
-
-        const lic = card.dataset.license;
-        state.license = lic;
-        state.licenseLabel = licenseTexts[lic];
-
-        licenseResultEl.textContent = `선택한 성향: ${state.licenseLabel}`;
-        toStep2Btn.disabled = false;
-
-        // Step 2 활성화
-        document.getElementById("step2").classList.remove("inactive");
-        document.getElementById("step-pill-2").classList.add("active");
-        document.getElementById("start-wc").disabled = false;
-        document.getElementById("shuffle-wc").disabled = false;
-      });
-    });
-
-    toStep2Btn.addEventListener("click", () => {
-      document.getElementById("step1").scrollIntoView({ behavior: "smooth", block: "start" });
-      setTimeout(() => {
-        document.getElementById("step2").scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 100);
-    });
-
-    // ====== STEP 2: 차량 DB (공식 리스트 기반, 스포츠/GT 계열만 추출) ======
-    // paidTracks: 해당 차량이 포함된 B클래스 대표 시리즈(2025 S4 기준)에서
-    // 풀시즌 출전을 가정했을 때 필요한 유료 트랙 개수를 "대략" 넣은 값
-    // series: 어떤 계열인지 간단 설명 (성향 연결용)
-    const baseCars = [
-      // GT3 (B 라이센스 스포츠카 메인)
+    // 1단계: 라이센스/성향 카드
+    const licenses = [
       {
-        name: "Aston Martin Vantage GT3 EVO",
-        cls: "GT3",
-        series: "B · GT3 메인 / IMSA, GT Sprint 등",
-        tags: ["GT3", "B 라이센스", "2025 S4 신규", "메타"],
-        paidTracks: 11,
-        paidCar: true
+        code: "D",
+        title: "D 라이센스 느낌 – 범퍼카 존",
+        desc: "컨택? 괜찮지! ‘살짝’ 박고 박히는 것까지도 레이스의 일부라고 생각함. 앞차 범퍼에 스티어링 걸리는 순간이 제일 짜릿한 타입.",
       },
       {
-        name: "BMW M4 GT3",
-        cls: "GT3",
-        series: "B · GT3 Challenge / Regional Tour",
-        tags: ["GT3", "B 라이센스", "밸런스형", "인기차"],
-        paidTracks: 11,
-        paidCar: true
+        code: "C",
+        title: "C 라이센스 느낌 – 전손 각오 코너 사바사",
+        desc: "‘여긴 보내야 해’ 싶은 코너에선 전손도 각오함. 누구랑 싸우는지, 코너 성향이 어떤지에 따라 몸싸움 강도가 달라지는 타입.",
       },
       {
-        name: "Ferrari 296 GT3",
-        cls: "GT3",
-        series: "B · GT3 / 내구",
-        tags: ["GT3", "B 라이센스", "코너링", "페라리"],
-        paidTracks: 11,
-        paidCar: true
+        code: "B",
+        title: "B 라이센스 느낌 – 치열한 생존 경쟁",
+        desc: "인시던트 포인트는 소중하지만, 포지션 싸움도 포기 못함. 깨끗하게 가되, 빈 공간 있으면 무조건 코 들이밀어 보는 타입.",
       },
       {
-        name: "Mercedes-AMG GT3 2020",
-        cls: "GT3",
-        series: "B · GT3 / 멀티클래스",
-        tags: ["GT3", "B 라이센스", "안정적", "내구"],
-        paidTracks: 11,
-        paidCar: true
+        code: "A",
+        title: "A 라이센스 느낌 – 젠틀맨 리그",
+        desc: "클린 레이싱이 최우선. 추월도 ‘상대가 인지했는지’까지 확인하는 타입. 인시던트 적게, 피트 전략과 페이스로 승부 보는 스타일.",
       },
-      {
-        name: "Lamborghini Huracán GT3 EVO",
-        cls: "GT3",
-        series: "B · GT3 / 내구",
-        tags: ["GT3", "B 라이센스", "코너 공격적", "인기"],
-        paidTracks: 11,
-        paidCar: true
-      },
-      {
-        name: "Audi R8 LMS EVO II GT3",
-        cls: "GT3",
-        series: "B · GT3 / 뉘르부르크링 등",
-        tags: ["GT3", "B 라이센스", "테크니컬", "아우디"],
-        paidTracks: 11,
-        paidCar: true
-      },
-      {
-        name: "Chevrolet Corvette Z06 GT3.R",
-        cls: "GT3",
-        series: "B · GT3 / IMSA GTD",
-        tags: ["GT3", "B 라이센스", "미국 GT", "내구"],
-        paidTracks: 11,
-        paidCar: true
-      },
-      {
-        name: "Ford Mustang GT3",
-        cls: "GT3",
-        series: "B · GT3 / GT Endurance",
-        tags: ["GT3", "B 라이센스", "V8 사운드", "머슬감성"],
-        paidTracks: 11,
-        paidCar: true
-      },
-
-      // GTE (아직도 B클래스 시리즈 존재)
-      {
-        name: "Ferrari 488 GTE",
-        cls: "GTE",
-        series: "B · GTE Sprint",
-        tags: ["GTE", "B 라이센스", "페라리", "클래식"],
-        paidTracks: 11,
-        paidCar: true
-      },
-      {
-        name: "BMW M8 GTE",
-        cls: "GTE",
-        series: "B · GTE Sprint / 내구",
-        tags: ["GTE", "B 라이센스", "고속 안정성", "BMW"],
-        paidTracks: 11,
-        paidCar: true
-      },
-      {
-        name: "Porsche 911 RSR (GTE)",
-        cls: "GTE",
-        series: "B · GTE",
-        tags: ["GTE", "B 라이센스", "사운드", "포르쉐"],
-        paidTracks: 11,
-        paidCar: true
-      },
-      {
-        name: "Chevrolet Corvette C8.R GTE",
-        cls: "GTE",
-        series: "B · GTE",
-        tags: ["GTE", "B 라이센스", "미국 GT", "르망"],
-        paidTracks: 11,
-        paidCar: true
-      },
-
-      // GT4 (일부 B 또는 C/B 전환 시리즈 기준)
-      {
-        name: "BMW M4 GT4 (G82)",
-        cls: "GT4",
-        series: "B/C · GT4 시리즈",
-        tags: ["GT4", "밸런스형", "엔트리 로드", "BMW"],
-        paidTracks: 10,
-        paidCar: true
-      },
-      {
-        name: "Aston Martin Vantage GT4",
-        cls: "GT4",
-        series: "B/C · GT4",
-        tags: ["GT4", "코너링", "브리티시", "엔트리~중급"],
-        paidTracks: 10,
-        paidCar: true
-      },
-      {
-        name: "Mercedes-AMG GT4",
-        cls: "GT4",
-        series: "B/C · GT4",
-        tags: ["GT4", "파워풀", "ABS/TC 친절", "메르세데스"],
-        paidTracks: 10,
-        paidCar: true
-      },
-      {
-        name: "Porsche 718 Cayman GT4 Clubsport MR",
-        cls: "GT4",
-        series: "B/C · GT4",
-        tags: ["GT4", "포르쉐", "미드십", "밸런스 좋음"],
-        paidTracks: 10,
-        paidCar: true
-      },
-      {
-        name: "McLaren 570S GT4",
-        cls: "GT4",
-        series: "B/C · GT4",
-        tags: ["GT4", "맥라렌", "테크니컬", "트랙데이 감성"],
-        paidTracks: 10,
-        paidCar: true
-      },
-      {
-        name: "Ford Mustang GT4",
-        cls: "GT4",
-        series: "B/C · GT4",
-        tags: ["GT4", "머슬카 느낌", "2025 S4 신규", "V8"],
-        paidTracks: 10,
-        paidCar: true
-      },
-
-      // 컵 / 원메이크 / 엔트리 스포츠카
-      {
-        name: "Porsche 911 GT3 Cup (992)",
-        cls: "Cup",
-        series: "B · 컵 / Nurburgring Endurance 등",
-        tags: ["컵카", "노 ABS", "하드코어", "포르쉐"],
-        paidTracks: 9,
-        paidCar: true
-      },
-      {
-        name: "Ferrari 296 Challenge",
-        cls: "Challenge",
-        series: "B · 페라리 원메이크",
-        tags: ["원메이크", "페라리", "하드코어 컵", "트랙데이"],
-        paidTracks: 9,
-        paidCar: true
-      },
-      {
-        name: "BMW M2 CS Racing",
-        cls: "Cup",
-        series: "B/C · 컵 / 엔트리",
-        tags: ["컵카", "B/C 라이센스", "연습용", "BMW"],
-        paidTracks: 9,
-        paidCar: true
-      },
-
-      {
-        name: "Global Mazda MX-5 Cup",
-        cls: "Entry",
-        series: "Rookie/C · 무료 베이스 / 엔트리 로드",
-        tags: ["무료 베이스", "엔트리", "클린 레이스", "연습용"],
-        paidTracks: 0, // 기본 무료 트랙 조합이 많으므로 0으로 처리
-        paidCar: false
-      },
-      {
-        name: "Toyota GR86",
-        cls: "Entry",
-        series: "Rookie/C · 무료 베이스 / 엔트리 로드",
-        tags: ["무료 베이스", "엔트리", "GR86 컵", "슬라이드 연습"],
-        paidTracks: 0,
-        paidCar: false
-      },
-
-      // TCR (투어링이지만 스포츠카 느낌 레이스)
-      {
-        name: "Hyundai Elantra N TCR",
-        cls: "TCR",
-        series: "B · TCR / 투어링",
-        tags: ["TCR", "전륜", "타임어택 느낌", "B 라이센스"],
-        paidTracks: 9,
-        paidCar: true
-      },
-      {
-        name: "Honda Civic Type R TCR",
-        cls: "TCR",
-        series: "B · TCR / 투어링",
-        tags: ["TCR", "전륜", "코너 배틀", "혼다"],
-        paidTracks: 9,
-        paidCar: true
-      },
-
-      // 프로토 타입 / 하이브리드 (상위 스포츠 프로토타입)
-      {
-        name: "Dallara P217 LMP2",
-        cls: "LMP2",
-        series: "B · LMP2 Challenge / 내구",
-        tags: ["LMP2", "B 라이센스", "멀티클래스", "내구"],
-        paidTracks: 11,
-        paidCar: true
-      },
-      {
-        name: "Ligier JS P320 (LMP3)",
-        cls: "LMP3",
-        series: "B/C · LMP3 / 내구",
-        tags: ["LMP3", "엔트리 프로토", "코스트 효율", "내구"],
-        paidTracks: 10,
-        paidCar: true
-      },
-      {
-        name: "BMW M Hybrid V8",
-        cls: "GTP",
-        series: "A/B · IMSA GTP",
-        tags: ["GTP", "프로토타입", "하이브리드", "상위리그"],
-        paidTracks: 11,
-        paidCar: true
-      },
-
-      // Radical & Mission R (하드코어 스포츠 프로토 타입)
-      {
-        name: "Radical SR10",
-        cls: "Radical",
-        series: "B/C · Radical / 랩타임 머신",
-        tags: ["라디컬", "하드코어", "에어로", "타임어택"],
-        paidTracks: 9,
-        paidCar: true
-      },
-      {
-        name: "Radical SR8",
-        cls: "Radical",
-        series: "B/C · Radical",
-        tags: ["라디컬", "클래식", "프로토 느낌", "테크니컬"],
-        paidTracks: 9,
-        paidCar: true
-      },
-      {
-        name: "Porsche Mission R",
-        cls: "EV Cup",
-        series: "B/C · 전기 컵카",
-        tags: ["EV", "컵카", "포르쉐", "하드코어"],
-        paidTracks: 9,
-        paidCar: true
-      }
     ];
 
-    // 토너먼트 상태
-    let currentRound = [];
-    let nextRound = [];
-    let matchIndex = 0;
-    let roundSize = 32; // 32강 기준
-    let started = false;
+    // 2단계: 스포츠카 월드컵용 차량 DB
+    // img는 현재 placeholder. 나중에 iracing.com 차량 페이지에서 이미지 주소 복사해서 교체하면 됨.
+    const baseCars = [
+  // =========================
+  // 현대 GT3 라인업
+  // =========================
+  {
+    name: "Aston Martin Vantage GT3 EVO",
+    cls: "GT3",
+    tags: ["gt3", "modern", "balanced", "stable", "endurance", "meta_candidate"],
+    img: "https://s100.iracing.com/wp-content/uploads/2025/09/AstonMartinVantageEVOGT3-feature-350x197.jpg"
+  },
+  {
+    name: "Acura NSX GT3 EVO 22",
+    cls: "GT3",
+    tags: ["gt3", "modern", "mid_engine", "rotation", "trail_brake", "technical"],
+    img: "https://s100.iracing.com/wp-content/uploads/2024/12/acura-nsx-gt3-evo22-feature-350x197.jpg"
+  },
+  {
+    name: "Audi R8 LMS EVO II GT3",
+    cls: "GT3",
+    tags: ["gt3", "modern", "mid_engine", "agile", "rotation", "audi_fan"],
+    img: "https://s100.iracing.com/wp-content/uploads/2023/12/Audi-R8-LMS-EVO-II-GT3_feature-350x197.jpg"
+  },
+  {
+    name: "BMW M4 GT3 EVO",
+    cls: "GT3",
+    tags: ["gt3", "modern", "front_engine", "stable", "user_friendly", "popular"],
+    img: "https://s100.iracing.com/wp-content/uploads/2020/12/BMW-M4-GT3-Evo-feature-350x197.jpg"
+  },
+  {
+    name: "Chevrolet Corvette Z06 GT3.R",
+    cls: "GT3",
+    tags: ["gt3", "modern", "front_engine", "torque", "aggressive", "american"],
+    img: "https://s100.iracing.com/wp-content/uploads/2024/05/chevrolet-corvette-z06-gt3r-feature-350x197.jpg"
+  },
+  {
+    name: "Ferrari 296 GT3",
+    cls: "GT3",
+    tags: ["gt3", "modern", "mid_engine", "high_downforce", "sharp_turn_in", "meta"],
+    img: "https://s100.iracing.com/wp-content/uploads/2023/09/Ferrari296GT3-feature-1-350x197.jpg"
+  },
+  {
+    name: "Ford Mustang GT3",
+    cls: "GT3",
+    tags: ["gt3", "modern", "front_engine", "torquey", "brutal", "american_muscle"],
+    img: "https://s100.iracing.com/wp-content/uploads/2024/05/ford-mustang-gt3-feature-350x197.jpg"
+  },
+  {
+    name: "Lamborghini Huracan GT3 EVO",
+    cls: "GT3",
+    tags: ["gt3", "modern", "mid_engine", "oversteer_prone", "high_skill", "flashy"],
+    img: "https://s100.iracing.com/wp-content/uploads/2020/12/LamborghiniHuracanGT3EVO-350x197.jpg"
+  },
+  {
+    name: "McLaren 720S GT3 EVO",
+    cls: "GT3",
+    tags: ["gt3", "modern", "mid_engine", "aero_sensitive", "quick", "high_ceiling"],
+    img: "https://s100.iracing.com/wp-content/uploads/2024/09/mclaren-720s-gt3-evo-350x197.jpg"
+  },
+  {
+    name: "Mercedes-AMG GT3 2020",
+    cls: "GT3",
+    tags: ["gt3", "modern", "front_mid_engine", "stable", "braking_confidence", "endurance_favorite"],
+    img: "https://s100.iracing.com/wp-content/uploads/2022/05/Mercedes-AMG-GT3-2020-350x197.jpg"
+  },
+  {
+    name: "Porsche 911 GT3 R (992)",
+    cls: "GT3",
+    tags: ["gt3", "modern", "rear_engine", "rotation", "trail_brake", "high_skill"],
+    img: "https://s100.iracing.com/wp-content/uploads/2023/06/porsche992rgt3-feature-1-350x197.jpg"
+  },
 
-    const matchInfoEl = document.getElementById("match-info");
-    const matchGridEl = document.getElementById("match-grid");
-    const wcStatusEl = document.getElementById("wc-status");
-    const winnerTextEl = document.getElementById("winner-text");
-    const startBtn = document.getElementById("start-wc");
-    const shuffleBtn = document.getElementById("shuffle-wc");
-    const restartBtn = document.getElementById("restart-wc");
+  // 레거시 / 구형 GT3
+  {
+    name: "Ferrari 488 GT3",
+    cls: "GT3",
+    tags: ["gt3", "legacy", "mid_engine", "smooth", "classic", "forgiving"],
+    img: "https://s100.iracing.com/wp-content/uploads/2017/09/Ferrari-488-GT3-2-350x197.jpg"
+  },
+  {
+    name: "McLaren MP4-12C GT3",
+    cls: "GT3",
+    tags: ["gt3", "legacy", "mid_engine", "snap_oversteer", "old_school", "challenging"],
+    img: "https://s100.iracing.com/wp-content/uploads/2012/11/McLaren-MP4-12C-350x197.jpg"
+  },
+  {
+    name: "BMW Z4 GT3",
+    cls: "GT3",
+    tags: ["gt3", "legacy", "front_mid_engine", "balanced", "nostalgic", "endurance"],
+    img: "https://s100.iracing.com/wp-content/uploads/2013/12/BMW-Z4-GT3-1-350x197.jpg"
+  },
+  {
+    name: "Ford GT-R",
+    cls: "GT3",
+    tags: ["gt3", "legacy", "mid_engine", "raw", "old_school", "high_skill"],
+    img: "https://s100.iracing.com/wp-content/uploads/2012/11/Ford-GTR-350x197.jpg"
+  },
+  {
+    name: "Audi R8 LMS GT3",
+    cls: "GT3",
+    tags: ["gt3", "legacy", "mid_engine", "lively_rear", "rotation", "sound_enjoyer"],
+    img: "https://s100.iracing.com/wp-content/uploads/2016/02/Audi-R8-LMS-GT3-350x197.jpg"
+  },
+  {
+    name: "Ferrari 488 GT3 Evo 2020",
+    cls: "GT3",
+    tags: ["gt3", "legacy", "mid_engine", "meta_memory", "endurance", "user_friendly"],
+    img: "https://s100.iracing.com/wp-content/uploads/2021/09/Ferrari-488-GT3-EVO-350x197.jpg"
+  },
+  {
+    name: "Mercedes-AMG GT3",
+    cls: "GT3",
+    tags: ["gt3", "legacy", "front_mid_engine", "safe", "rookie_friendly", "endurance"],
+    img: "https://s100.iracing.com/wp-content/uploads/2016/02/Mercedes-AMG-GT3-Legacy-350x197.jpg"
+  },
+  {
+    name: "Porsche 911 GT3 R",
+    cls: "GT3",
+    tags: ["gt3", "legacy", "rear_engine", "rotation", "trail_brake", "purist"],
+    img: "https://s100.iracing.com/wp-content/uploads/2021/06/Porsche-911-GT3-R-1-350x197.jpg"
+  },
 
-    function shuffleArray(arr) {
-      const copy = arr.slice();
-      for (let i = copy.length - 1; i > 0; i--) {
+  // =========================
+  // GT4 & 컵 / 챌린지
+  // =========================
+  {
+    name: "Ford Mustang GT4",
+    cls: "GT4",
+    tags: ["gt4", "front_engine", "torquey", "muscle", "forgiving", "aggressive_style"],
+    img: "https://s100.iracing.com/wp-content/uploads/2025/09/FordMustangGT4-feature-350x197.jpg"
+  },
+  {
+    name: "Aston Martin Vantage GT4",
+    cls: "GT4",
+    tags: ["gt4", "balanced", "stable", "endurance", "user_friendly", "all_rounder"],
+    img: "https://s100.iracing.com/wp-content/uploads/2022/03/Aston-Martin-Vantage-GT4-1-350x197.jpg"
+  },
+  {
+    name: "BMW M4 G82 GT4 Evo",
+    cls: "GT4",
+    tags: ["gt4", "modern", "front_engine", "stable", "gt3_transition", "meta_candidate"],
+    img: "https://s100.iracing.com/wp-content/uploads/2024/09/bmw-m4-g82-gt4-feature-350x197.jpg"
+  },
+  {
+    name: "McLaren 570S GT4",
+    cls: "GT4",
+    tags: ["gt4", "mid_engine", "nimble", "rotation", "oversteer_prone", "fun"],
+    img: "https://s100.iracing.com/wp-content/uploads/2021/03/McLaren-570s-GT4-350x197.jpg"
+  },
+  {
+    name: "Mercedes-AMG GT4",
+    cls: "GT4",
+    tags: ["gt4", "front_mid_engine", "safe", "beginner_friendly", "braking_confidence"],
+    img: "https://s100.iracing.com/wp-content/uploads/2022/05/Mercedes-AMG-GT4-350x197.jpg"
+  },
+  {
+    name: "Porsche 718 Cayman GT4 Clubsport",
+    cls: "GT4",
+    tags: ["gt4", "mid_engine", "precise", "rotation", "trail_brake", "drivers_car"],
+    img: "https://s100.iracing.com/wp-content/uploads/2020/04/Porsche-718-Cayman-GT4-Clubsport-feature-350x197.jpg"
+  },
+  {
+    name: "BMW M4 F82 GT4 – 2018",
+    cls: "GT4",
+    tags: ["gt4", "legacy", "front_engine", "stable", "club_racing", "old_meta"],
+    img: "https://s100.iracing.com/wp-content/uploads/2020/06/BMW-M4-GT4-350x197.jpg"
+  },
+
+  {
+    name: "Ferrari 296 Challenge",
+    cls: "Cup",
+    tags: ["cup", "single_make", "high_power", "gt3_like", "late_braker", "aggressive"],
+    img: "https://s100.iracing.com/wp-content/uploads/2025/06/Ferrari296Challenge-feature-350x197.jpg"
+  },
+  {
+    name: "Porsche 911 GT3 Cup (992)",
+    cls: "Cup",
+    tags: ["cup", "single_make", "rear_engine", "no_abs", "hard_braking", "high_skill"],
+    img: "https://s100.iracing.com/wp-content/uploads/2021/08/porsche992Cup-feature-350x197.jpg"
+  },
+  {
+    name: "Porsche 911 GT3 Cup",
+    cls: "Cup",
+    tags: ["cup", "legacy", "rear_engine", "knife_edge", "trail_brake", "purist"],
+    img: "https://s100.iracing.com/wp-content/uploads/2017/01/Porsche-911-Cup-991-350x197.jpg"
+  },
+  {
+    name: "BMW M2 CS Racing",
+    cls: "Cup",
+    tags: ["cup", "front_engine", "stable", "beginner_friendly", "sprint", "door_to_door"],
+    img: "https://s100.iracing.com/wp-content/uploads/2024/12/bmw-m2-csr-feature-350x197.jpg"
+  },
+
+  // =========================
+  // TCR & 투어링 / 스톡카 브라질
+  // =========================
+  {
+    name: "Audi RS 3 LMS TCR",
+    cls: "TCR",
+    tags: ["tcr", "fwd", "late_braker", "aggressive", "curb_attack", "touring"],
+    img: "https://s100.iracing.com/wp-content/uploads/2019/09/Audi-RS3-LMS-GT4-350x197.jpg"
+  },
+  {
+    name: "Hyundai Elantra N TCR",
+    cls: "TCR",
+    tags: ["tcr", "fwd", "meta", "stable", "brake_trust", "front_grip"],
+    img: "https://s100.iracing.com/wp-content/uploads/2021/12/hyundai-tile-350x197.jpg"
+  },
+  {
+    name: "Hyundai Veloster N TCR",
+    cls: "TCR",
+    tags: ["tcr", "fwd", "nimble", "rotation_on_brake", "lively", "fun"],
+    img: "https://s100.iracing.com/wp-content/uploads/2022/03/Hyundai-Elantra-N-350x197.jpg"
+  },
+  {
+    name: "Honda Civic Type R TCR",
+    cls: "TCR",
+    tags: ["tcr", "fwd", "balanced", "well_known", "late_braker", "touring"],
+    img: "https://s100.iracing.com/wp-content/uploads/2021/12/honda-tile-350x197.jpg"
+  },
+
+  {
+    name: "Stockcar Brasil Chevrolet Cruze",
+    cls: "Stockcar",
+    tags: ["stockcar", "brazil", "door_to_door", "aggressive", "high_downforce_tin_top"],
+    img: "https://s100.iracing.com/wp-content/uploads/2022/03/Stock-Car-Brasil-Chevrolet-Cruze-1-350x197.jpg"
+  },
+  {
+    name: "Stockcar Brasil Toyota Corolla",
+    cls: "Stockcar",
+    tags: ["stockcar", "brazil", "touring_style", "contact_prone", "push_to_pass"],
+    img: "https://s100.iracing.com/wp-content/uploads/2022/03/Stock-Car-Brasil-Toyota-Corolla-1-350x197.jpg"
+  },
+
+  // =========================
+  // GTE & GT1 / GTLM
+  // =========================
+  {
+    name: "BMW M8 GTE",
+    cls: "GTE",
+    tags: ["gte", "front_engine", "big_body", "stable", "torque", "endurance"],
+    img: "https://s100.iracing.com/wp-content/uploads/2019/02/BMW-M8-GT3-350x197.jpg"
+  },
+  {
+    name: "Chevrolet Corvette C8.R",
+    cls: "GTE",
+    tags: ["gte", "mid_engine", "modern", "downforce", "aggressive", "sound_enjoyer"],
+    img: "https://s100.iracing.com/wp-content/uploads/2020/09/Chevrolet_Corvette_C8R-350x197.jpg"
+  },
+  {
+    name: "Ferrari 488 GTE",
+    cls: "GTE",
+    tags: ["gte", "mid_engine", "balanced", "classic_endurance", "meta_memory"],
+    img: "https://s100.iracing.com/wp-content/uploads/2017/06/Ferrari-488-GTE-2-350x197.jpg"
+  },
+  {
+    name: "Ford GT GTE",
+    cls: "GTE",
+    tags: ["gte", "mid_engine", "old_school", "raw", "challenging"],
+    img: "https://s100.iracing.com/wp-content/uploads/2017/06/Ford-GT-2017-350x197.jpg"
+  },
+  {
+    name: "Porsche 911 RSR",
+    cls: "GTE",
+    tags: ["gte", "rear_engine_like", "screamer_sound", "rotation", "high_skill", "fan_favorite"],
+    img: "https://s100.iracing.com/wp-content/uploads/2018/06/Porsche-991-RSR-GTE-feature-350x197.jpg"
+  },
+
+  {
+    name: "Chevrolet Corvette C6.R",
+    cls: "GT1",
+    tags: ["gt1", "brutal", "high_power", "old_school", "loud", "endurance_legend"],
+    img: "https://s100.iracing.com/wp-content/uploads/2012/11/Corvette-C6R-350x197.jpg"
+  },
+  {
+    name: "Aston Martin DBR9 GT1",
+    cls: "GT1",
+    tags: ["gt1", "v12", "iconic", "high_speed", "raw", "aero_car"],
+    img: "https://s100.iracing.com/wp-content/uploads/2015/05/Aston-Martin-350x197.jpg"
+  },
+
+  // =========================
+  // 슈퍼카 / V8 슈퍼카
+  // =========================
+  {
+    name: "Supercars Chevrolet Camaro Gen 3",
+    cls: "Supercars",
+    tags: ["supercars", "v8", "australia", "heavy", "sliding", "aggressive"],
+    img: "https://s100.iracing.com/wp-content/uploads/2024/12/supercars-camaro-gen3-feature-350x197.jpg"
+  },
+  {
+    name: "Supercars Ford Mustang Gen 3",
+    cls: "Supercars",
+    tags: ["supercars", "v8", "australia", "late_braker", "busy_rear", "fun"],
+    img: "https://s100.iracing.com/wp-content/uploads/2024/12/supercars-mustang-gen3-feature-350x197.jpg"
+  },
+  {
+    name: "Supercars Ford Mustang GT",
+    cls: "Supercars",
+    tags: ["supercars", "legacy", "v8", "slidey", "technical", "enduro_sprint"],
+    img: "https://s100.iracing.com/wp-content/uploads/2019/12/New-Ford-Tile-350x197.jpg"
+  },
+  {
+    name: "Supercars Holden ZB Commodore",
+    cls: "Supercars",
+    tags: ["supercars", "v8", "holden", "door_to_door", "oversteer", "fan_favorite"],
+    img: "https://s100.iracing.com/wp-content/uploads/2019/12/New-Holden-Tile-350x197.jpg"
+  },
+  {
+    name: "V8 Supercar Holden VF Commodore – 2014",
+    cls: "Supercars",
+    tags: ["supercars", "legacy", "v8", "old_regulations", "raw", "slidey"],
+    img: "https://s100.iracing.com/wp-content/uploads/2013/12/Legacy-V8-Supercar-Holden-VF-Commodore-2014-feature-1-350x197.jpg"
+  },
+  {
+    name: "V8 Supercar Ford FG Falcon – 2014",
+    cls: "Supercars",
+    tags: ["supercars", "legacy", "v8", "ford_vs_holden", "lively", "challenging"],
+    img: "https://s100.iracing.com/wp-content/uploads/2015/05/V8-Supercar-Ford-FG-Falcon-2014-feature-1-350x197.jpg"
+  },
+  {
+    name: "V8 Supercar Ford Falcon – 2009",
+    cls: "Supercars",
+    tags: ["supercars", "legacy", "v8", "historic", "slide_monster"],
+    img: "https://s100.iracing.com/wp-content/uploads/2020/05/legacy_V8SupercarFordFalcon_2009-350x197.jpg"
+  },
+
+  // =========================
+  // 레거시 투어링 / 스트리트 계열
+  // =========================
+  {
+    name: "Cadillac CTS-V",
+    cls: "Touring",
+    tags: ["touring", "v8_sedan", "heavy", "club_racing", "brake_management"],
+    img: "https://s100.iracing.com/wp-content/uploads/2020/05/included_CadillacCTS-V-350x197.jpg"
+  },
+  {
+    name: "Kia Optima",
+    cls: "Touring",
+    tags: ["touring", "fwd", "turbo", "late_braker", "curb_attack", "legacy_series"],
+    img: "https://s100.iracing.com/wp-content/uploads/2013/04/included_Kia_Optima-350x197.jpg"
+  },
+  {
+    name: "Ford Mustang FR500S",
+    cls: "Touring",
+    tags: ["touring", "front_engine", "spec_series", "hpde_style", "entry_level"],
+    img: "https://s100.iracing.com/wp-content/uploads/2012/11/Ford-FR500-350x197.jpg"
+  },
+  {
+    name: "Renault Clio R.S. V",
+    cls: "Touring",
+    tags: ["touring", "fwd", "momentum", "short_track", "close_racing"],
+    img: "https://s100.iracing.com/wp-content/uploads/2023/03/renaultclio-feature-350x197.jpg"
+  },
+  {
+    name: "Ruf Rt 12 R",
+    cls: "Sports",
+    tags: ["sports", "rear_engine", "street_based", "oversteer_prone", "sound", "hero_laps"],
+    img: "https://s100.iracing.com/wp-content/uploads/2013/01/Ruf-RT12-350x197.jpg"
+  },
+  {
+    name: "Volkswagen Jetta TDi",
+    cls: "Touring",
+    tags: ["touring", "diesel", "momentum", "low_power", "rookie_friendly"],
+    img: "https://s100.iracing.com/wp-content/uploads/2012/11/included_VWJettaTDI-350x197.jpg"
+  },
+
+  // =========================
+  // MX-5 / Solstice / GR86 계열
+  // =========================
+  {
+    name: "Toyota GR86",
+    cls: "Club",
+    tags: ["club", "rwd", "momentum", "beginner_friendly", "drift_vibes", "slow_in_fast_out"],
+    img: "https://s100.iracing.com/wp-content/uploads/2022/12/Toyota-GR86-350x197.jpg"
+  },
+  {
+    name: "Global Mazda MX-5 Cup",
+    cls: "Club",
+    tags: ["club", "mx5", "spec_series", "rookie_step", "momentum", "door_to_door"],
+    img: "https://s100.iracing.com/wp-content/uploads/2015/05/Global-Mazda-MX-5-Feature-350x197.jpg"
+  },
+  {
+    name: "Mazda MX-5 Cup – 2010",
+    cls: "Club",
+    tags: ["club", "mx5", "legacy", "momentum", "learning", "safe"],
+    img: "https://s100.iracing.com/wp-content/uploads/2025/07/mazda-mx-5-cup-2010-feature-350x197.jpg"
+  },
+  {
+    name: "Mazda MX-5 Roadster – 2010",
+    cls: "Club",
+    tags: ["club", "mx5", "roadster", "training", "slow_car_fast", "rookie"],
+    img: "https://s100.iracing.com/wp-content/uploads/2025/07/mazda-mx-5-roadster-2010-feature-350x197.jpg"
+  },
+  {
+    name: "Pontiac Solstice Club Sport",
+    cls: "Club",
+    tags: ["club", "legacy", "slow", "momentum", "old_rookie", "teaching"],
+    img: "https://s100.iracing.com/wp-content/uploads/2012/10/PontiacSolstice-feature-350x197.jpg"
+  },
+  {
+    name: "Pontiac Solstice Club Sport – Rookie",
+    cls: "Club",
+    tags: ["club", "rookie", "slow", "safe", "training", "beginner"],
+    img: "https://s100.iracing.com/wp-content/uploads/2012/10/PontiacSolstice_Rookie-feature-350x197.jpg"
+  },
+
+  // =========================
+  // GTP / LMDh / LMP / DP / 프로토
+  // =========================
+  {
+    name: "Ferrari 499P",
+    cls: "GTP",
+    tags: ["gtp", "hypercar", "hybrid", "high_downforce", "endurance", "meta_candidate"],
+    img: "https://s100.iracing.com/wp-content/uploads/2024/12/ferrari-499p-feature-350x197.jpg"
+  },
+  {
+    name: "Acura ARX-06 GTP",
+    cls: "GTP",
+    tags: ["gtp", "hybrid", "nimble", "rotation", "high_skill", "imsa"],
+    img: "https://s100.iracing.com/wp-content/uploads/2023/09/HRCAcuraARX-06-feature-350x197.jpg"
+  },
+  {
+    name: "Porsche 963 GTP",
+    cls: "GTP",
+    tags: ["gtp", "hybrid", "high_tech", "endurance", "porsche_fan", "oval_plus_road"],
+    img: "https://s100.iracing.com/wp-content/uploads/2023/09/Porsche963GTP-feature-1-350x197.jpg"
+  },
+  {
+    name: "Cadillac V-Series.R GTP",
+    cls: "GTP",
+    tags: ["gtp", "hybrid", "american", "torquey", "stable", "endurance"],
+    img: "https://s100.iracing.com/wp-content/uploads/2023/06/cadillacvgtp-feature-350x197.jpg"
+  },
+  {
+    name: "BMW M Hybrid V8",
+    cls: "GTP",
+    tags: ["gtp", "hybrid", "bmw", "aggressive", "aero_sensitive", "high_ceiling"],
+    img: "https://s100.iracing.com/wp-content/uploads/2022/12/BMW-M-Hybrid-V8-9-350x197.jpg"
+  },
+  {
+    name: "Ligier JS P320",
+    cls: "LMP3",
+    tags: ["lmp3", "prototype", "entry_proto", "gt4_multi", "momentum", "training_proto"],
+    img: "https://s100.iracing.com/wp-content/uploads/2023/06/Ligier-JS-P320-Feature-350x197.jpg"
+  },
+  {
+    name: "Dallara P217 LMP2",
+    cls: "LMP2",
+    tags: ["lmp2", "prototype", "high_downforce", "multi_class", "endurance", "high_speed"],
+    img: "https://s100.iracing.com/wp-content/uploads/2020/08/Dallara_P217_LMP2-1-350x197.jpg"
+  },
+  {
+    name: "Porsche 919 LMP1",
+    cls: "LMP1",
+    tags: ["lmp1", "hybrid", "high_complexity", "ers_management", "very_fast", "hard"],
+    img: "https://s100.iracing.com/wp-content/uploads/2018/02/Porsche-919-feature-350x197.jpg"
+  },
+  {
+    name: "Audi R18 LMP1",
+    cls: "LMP1",
+    tags: ["lmp1", "diesel_era", "aero", "energy_management", "historic_lemans"],
+    img: "https://s100.iracing.com/wp-content/uploads/2018/02/Audi-R18-1-350x197.jpg"
+  },
+  {
+    name: "Chevrolet Corvette C7 Daytona Prototype",
+    cls: "DP",
+    tags: ["dp", "prototype", "rolex24_era", "brutal", "high_speed_oval", "raw"],
+    img: "https://s100.iracing.com/wp-content/uploads/2015/09/C7-Corvette-DP-350x197.jpg"
+  },
+  {
+    name: "HPD ARX 01c",
+    cls: "LMP2",
+    tags: ["lmp2", "legacy", "high_rev", "aero", "old_endurance", "challenging"],
+    img: "https://s100.iracing.com/wp-content/uploads/2012/11/HRC-ARX01c-feature-350x197.jpg"
+  },
+  {
+    name: "Riley Mk XX Daytona Prototype",
+    cls: "DP",
+    tags: ["dp", "legacy", "american_proto", "brutal", "oval_plus_road"],
+    img: "https://s100.iracing.com/wp-content/uploads/2020/05/legacy_RileyMkXXDaytonaProto_2008-350x197.jpg"
+  },
+  {
+    name: "Nissan GTP ZX-T",
+    cls: "GTP_Legacy",
+    tags: ["gtp", "turbo_era", "insane_speed", "turbo_lag", "old_school", "hero_or_zero"],
+    img: "https://s100.iracing.com/wp-content/uploads/2016/09/Nissan-GTP-350x197.jpg"
+  },
+  {
+    name: "Radical SR10",
+    cls: "Radical",
+    tags: ["radical", "high_downforce", "fast_club", "trackday_weapon", "precision"],
+    img: "https://s100.iracing.com/wp-content/uploads/2022/05/Radical-SR10-350x197.jpg"
+  },
+  {
+    name: "Radical SR8 V8",
+    cls: "Radical",
+    tags: ["radical", "legacy", "v8", "screamer", "lightweight", "high_skill"],
+    img: "https://s100.iracing.com/wp-content/uploads/2020/05/included_RadicalSR8V8-350x197.jpg"
+  },
+
+  // =========================
+  // 기타 스페셜티 / 미션 R / GTO 등
+  // =========================
+  {
+    name: "Porsche Mission R",
+    cls: "EV_Cup",
+    tags: ["ev", "cup", "electric", "insane_accel", "time_attack", "high_downforce"],
+    img: "https://s100.iracing.com/wp-content/uploads/2022/09/Porsche-Mission-R-350x197.jpg"
+  },
+  {
+    name: "Audi 90 GTO",
+    cls: "GTO",
+    tags: ["gto", "turbo", "group_b_vibes", "monster", "historic", "crowd_favorite"],
+    img: "https://s100.iracing.com/wp-content/uploads/2016/09/Audi-90-GTO-350x197.jpg"
+  },
+  {
+    name: "SCCA Spec Racer Ford",
+    cls: "Spec",
+    tags: ["spec", "club", "momentum", "teaching_racecraft", "low_power", "rookie_to_c"],
+    img: "https://s100.iracing.com/wp-content/uploads/2020/05/included_SCCASpecRacerFord-350x197.jpg"
+  }
+];
+
+    // 3단계: 비용 계산 기본 값
+    const PRICE_CAR = 11.95;      // GT3 1대
+    const PRICE_TRACK = 14.95;    // 유료 트랙 1개
+    const N_TRACKS = 11;          // 2025 S4 기준 대략 11개라고 가정
+
+    /* -------------------------------
+       공통 유틸
+    --------------------------------*/
+    function shuffle(array) {
+      const arr = array.slice();
+      for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [copy[i], copy[j]] = [copy[j], copy[i]];
+        [arr[i], arr[j]] = [arr[j], arr[i]];
       }
-      return copy;
+      return arr;
     }
-
-    function getRoundName(len) {
+    function roundName(len) {
       if (len === 32) return "32강";
       if (len === 16) return "16강";
       if (len === 8) return "8강";
@@ -812,166 +958,230 @@
       return "우승";
     }
 
+    /* -------------------------------
+       상태 값
+    --------------------------------*/
+    let selectedLicense = null;
+    let currentRound = [];
+    let nextRound = [];
+    let matchIndex = 0;
+    let winnerCar = null;
+
+    /* -------------------------------
+       스텝 전환
+    --------------------------------*/
+    const stepElems = {
+      1: document.getElementById("step1"),
+      2: document.getElementById("step2"),
+      3: document.getElementById("step3")
+    };
+    const stepHeaderElems = document.querySelectorAll(".step");
+
+    function setActiveStep(stepNum) {
+      Object.entries(stepElems).forEach(([num, el]) => {
+        el.classList.toggle("active", Number(num) === stepNum);
+      });
+      stepHeaderElems.forEach(el => {
+        const n = Number(el.dataset.step);
+        el.classList.toggle("active", n === stepNum);
+      });
+    }
+
+    /* -------------------------------
+       STEP 1 렌더링 & 동작
+    --------------------------------*/
+    const licenseGrid = document.getElementById("licenseGrid");
+    const step1NextBtn = document.getElementById("step1Next");
+
+    function renderLicenses() {
+      licenseGrid.innerHTML = "";
+      licenses.forEach(lic => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.dataset.code = lic.code;
+
+        card.innerHTML = `
+          <div class="license-label">${lic.code} 타입</div>
+          <div class="license-name">${lic.title}</div>
+          <div class="license-desc">${lic.desc}</div>
+        `;
+
+        card.addEventListener("click", () => {
+          selectedLicense = lic;
+          document.querySelectorAll("#licenseGrid .card").forEach(c => {
+            c.classList.toggle("selected", c === card);
+          });
+          step1NextBtn.disabled = false;
+        });
+
+        licenseGrid.appendChild(card);
+      });
+    }
+
+    step1NextBtn.addEventListener("click", () => {
+      setActiveStep(2);
+    });
+
+    /* -------------------------------
+       STEP 2: 월드컵 로직
+       - 좌/우에 같은 차량이 나오지 않도록
+         currentRound를 순서대로 2개씩 묶는 구조로 구현
+    --------------------------------*/
+    const roundInfoEl = document.getElementById("roundInfo");
+    const matchEl = document.getElementById("match");
+    const winnerTextEl = document.getElementById("winnerText");
+    const restartWorldcupBtn = document.getElementById("restartWorldcup");
+    const goStep3Btn = document.getElementById("goStep3");
+
+    function startWorldcup() {
+      // 32강 맞추기 위해 32개만 사용 (baseCars가 32개이도록 맞춰둠)
+      const shuffled = shuffle(baseCars).slice(0, 32);
+      currentRound = shuffled;
+      nextRound = [];
+      matchIndex = 0;
+      winnerCar = null;
+      winnerTextEl.textContent = "";
+      goStep3Btn.disabled = true;
+      renderMatch();
+    }
+
+    function updateRoundInfo() {
+      if (currentRound.length > 1) {
+        roundInfoEl.textContent = `${roundName(currentRound.length)} · 남은 매치: ${currentRound.length / 2}개`;
+      } else {
+        roundInfoEl.textContent = "최종 결과";
+      }
+    }
+
     function renderMatch() {
-      if (!started) return;
+      // 좌/우 중복 방지를 위해
+      // currentRound 배열에서 [matchIndex], [matchIndex+1] 순서대로 꺼내서 사용
+      matchEl.innerHTML = "";
+      updateRoundInfo();
 
       if (currentRound.length === 1) {
-        // 최종 우승
-        const winner = currentRound[0];
-        state.winnerCar = winner;
-
-        matchGridEl.innerHTML = "";
-        matchInfoEl.textContent = "최종 결과";
-
-        winnerTextEl.textContent = `당신의 이상형 iRacing 스포츠카는 "${winner.name}" 입니다!`;
-        wcStatusEl.textContent = "";
-
-        // Step3 활성화 + 요약/비용 계산
-        document.getElementById("step3").classList.remove("inactive");
-        document.getElementById("step-pill-3").classList.add("active");
-        updateSummaryAndCost();
-        restartBtn.disabled = false;
+        winnerCar = currentRound[0];
+        matchEl.innerHTML = "";
+        winnerTextEl.textContent = `당신의 이상형 스포츠카는 "${winnerCar.name}" 입니다!`;
+        goStep3Btn.disabled = false;
         return;
       }
-
-      const roundName = getRoundName(currentRound.length);
-      const pairIndex = matchIndex / 2 + 1;
-      const totalPairs = currentRound.length / 2;
-
-      matchInfoEl.textContent = `${roundName} - 매치 ${pairIndex} / ${totalPairs}`;
-      wcStatusEl.textContent = `남은 차량 수: ${currentRound.length}대`;
 
       const carA = currentRound[matchIndex];
       const carB = currentRound[matchIndex + 1];
 
-      function carCardHTML(car, id) {
-        const tagsHTML = (car.tags || []).map(t => `<span class="tag">#${t}</span>`).join("");
-        return `
-          <div class="car-card" id="${id}">
-            <div class="car-name">${car.name}</div>
-            <div class="car-class">${car.cls} · ${car.series}</div>
-            <div class="tag-row">${tagsHTML}</div>
-            <div class="car-note">이 차가 더 끌리면 클릭하세요.</div>
-          </div>
-        `;
+      // 방어 코드: 혹시라도 undefined가 나오면 종료
+      if (!carA || !carB || carA === carB) {
+        winnerCar = carA || carB;
+        currentRound = [winnerCar];
+        renderMatch();
+        return;
       }
 
-      matchGridEl.innerHTML = carCardHTML(carA, "carA") + carCardHTML(carB, "carB");
+      const cardHtml = (car, sideLabel) => `
+        <div class="car-card-inner">
+          <img src="${car.img}" alt="${car.name}" loading="lazy" />
+          <div class="car-name">${car.name}</div>
+          <div class="car-class">${car.cls}</div>
+          <div class="car-tags">#${car.tags.join(" #")}</div>
+          <div class="car-hint">${sideLabel} · 이 차가 더 끌리면 클릭!</div>
+        </div>
+      `;
 
-      document.getElementById("carA").onclick = () => chooseWinner(carA);
-      document.getElementById("carB").onclick = () => chooseWinner(carB);
+      const cardA = document.createElement("div");
+      cardA.className = "car-card";
+      cardA.innerHTML = cardHtml(carA, "왼쪽");
+
+      const cardB = document.createElement("div");
+      cardB.className = "car-card";
+      cardB.innerHTML = cardHtml(carB, "오른쪽");
+
+      cardA.addEventListener("click", () => chooseWinner(carA));
+      cardB.addEventListener("click", () => chooseWinner(carB));
+
+      matchEl.appendChild(cardA);
+      matchEl.appendChild(cardB);
     }
 
-    function chooseWinner(car) {
-      nextRound.push(car);
+    function chooseWinner(winner) {
+      nextRound.push(winner);
       matchIndex += 2;
 
       if (matchIndex >= currentRound.length) {
+        // 라운드 종료 → 다음 라운드 세팅
         currentRound = nextRound;
         nextRound = [];
         matchIndex = 0;
       }
+
       renderMatch();
     }
 
-    function initTournament(shuffleFirst = true) {
-      winnerTextEl.textContent = "";
-      wcStatusEl.textContent = "";
-      state.winnerCar = null;
-
-      let cars = baseCars.slice();
-      // 32강: baseCars가 32개 이상이라고 가정하고 앞에서 32개만 사용
-      if (cars.length > 32) {
-        cars = cars.slice(0, 32);
-      }
-      if (shuffleFirst) {
-        cars = shuffleArray(cars);
-      }
-
-      currentRound = cars;
-      nextRound = [];
-      matchIndex = 0;
-      roundSize = cars.length;
-      started = true;
-
-      restartBtn.disabled = false;
-      renderMatch();
-    }
-
-    startBtn.addEventListener("click", () => {
-      initTournament(true);
-    });
-    shuffleBtn.addEventListener("click", () => {
-      initTournament(true);
-    });
-    restartBtn.addEventListener("click", () => {
-      initTournament(true);
+    restartWorldcupBtn.addEventListener("click", () => {
+      startWorldcup();
     });
 
-    // ====== STEP 3: 요약 & 비용 계산 ======
-    function updateSummaryAndCost() {
-      const summaryEl = document.getElementById("summary-text");
-      const costBoxEl = document.getElementById("cost-box");
-      const costCarEl = document.getElementById("cost-car");
-      const costTracksCountEl = document.getElementById("cost-tracks-count");
-      const costTracksEl = document.getElementById("cost-tracks");
-      const costTotalEl = document.getElementById("cost-total");
-      const costTotalDiscountEl = document.getElementById("cost-total-discount");
+    goStep3Btn.addEventListener("click", () => {
+      if (!winnerCar) return;
+      setActiveStep(3);
+      fillSummaryAndPrice();
+    });
 
-      if (!state.winnerCar) {
-        summaryEl.innerHTML = "먼저 월드컵을 통해 차량을 선택해 주세요.";
-        costBoxEl.style.display = "none";
-        return;
-      }
+    /* -------------------------------
+       STEP 3: 요약 & 비용 계산
+    --------------------------------*/
+    const summaryLicenseEl = document.getElementById("summaryLicense");
+    const summaryCarEl = document.getElementById("summaryCar");
+    const priceBodyEl = document.getElementById("priceBody");
+    const backToStep2Btn = document.getElementById("backToStep2");
 
-      const car = state.winnerCar;
-      const lic = state.licenseLabel || "선택 안 함";
-
-      // 차량/트랙 유료 여부
-      const paidCar = car.paidCar;
-      const paidTracks = car.paidTracks || 0;
-
-      const carCost = paidCar ? CAR_PRICE : 0;
-      const tracksCost = paidTracks * TRACK_PRICE;
-      const total = carCost + tracksCost;
-
-      const itemCount = paidTracks + (paidCar ? 1 : 0);
-      const totalDiscount = itemCount >= 6 ? total * (1 - BULK_DISCOUNT) : total;
-
-      summaryEl.innerHTML = `
-        <div class="summary-line">
-          · 선택한 레이스 성향: <span class="summary-highlight">${lic}</span>
-        </div>
-        <div class="summary-line">
-          · 이상형 월드컵 최종 차량: <span class="summary-highlight">${car.name}</span> (${car.cls})
-        </div>
-        <div class="summary-line">
-          · 대표 시리즈 예시: <span class="summary-highlight">${car.series}</span>
-        </div>
-        <div class="summary-line">
-          · 가정: 해당 차량 1대를 구매하고, 시즌4 2025 기준 비슷한 B클래스 시리즈를
-          12주 시즌 대부분 출전한다고 가정했습니다.
-        </div>
-      `;
-
-      costCarEl.textContent = paidCar ? `$${carCost.toFixed(2)} (유료 차량 1대)` : "$0.00 (무료 베이스 차량)";
-      costTracksCountEl.textContent = `${paidTracks}개 (대부분 유료 트랙 기준)`;
-      costTracksEl.textContent = `$${tracksCost.toFixed(2)}`;
-      costTotalEl.textContent = `$${total.toFixed(2)} (정가 기준 합계)`;
-
-      if (itemCount >= 6) {
-        costTotalDiscountEl.textContent =
-          `$${totalDiscount.toFixed(2)} (차+트랙 ${itemCount}개 묶음 구매 시 약 15% 할인 가정)`;
+    function fillSummaryAndPrice() {
+      if (selectedLicense) {
+        summaryLicenseEl.textContent = `레이스 성향: ${selectedLicense.title}`;
       } else {
-        costTotalDiscountEl.textContent =
-          `$${total.toFixed(2)} (구매 개수가 적어 묶음 할인 거의 없음)`;
+        summaryLicenseEl.textContent = "레이스 성향: (선택 안 함)";
       }
 
-      costBoxEl.style.display = "block";
+      if (winnerCar) {
+        summaryCarEl.textContent = `이상형 스포츠카: ${winnerCar.name} (${winnerCar.cls})`;
+      } else {
+        summaryCarEl.textContent = "이상형 스포츠카: (월드컵 미진행)";
+      }
 
-      // 자동으로 3단계로 스크롤
-      document.getElementById("step3").scrollIntoView({ behavior: "smooth", block: "start" });
+      const carTotal = PRICE_CAR;
+      const trackTotal = PRICE_TRACK * N_TRACKS;
+      const total = carTotal + trackTotal;
+
+      priceBodyEl.innerHTML = `
+        <tr>
+          <td>GT 계열 차량 라이센스</td>
+          <td>1대</td>
+          <td>${PRICE_CAR.toFixed(2)}</td>
+          <td>${carTotal.toFixed(2)}</td>
+        </tr>
+        <tr>
+          <td>시즌 유료 트랙</td>
+          <td>${N_TRACKS}개</td>
+          <td>${PRICE_TRACK.toFixed(2)}</td>
+          <td>${trackTotal.toFixed(2)}</td>
+        </tr>
+        <tr>
+          <th>합계 (정가 기준)</th>
+          <th colspan="2"></th>
+          <th>${total.toFixed(2)}</th>
+        </tr>
+      `;
     }
+
+    backToStep2Btn.addEventListener("click", () => {
+      setActiveStep(2);
+    });
+
+    /* -------------------------------
+       초기화
+    --------------------------------*/
+    renderLicenses();
+    startWorldcup();
   </script>
 </body>
 </html>
